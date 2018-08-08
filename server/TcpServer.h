@@ -70,21 +70,11 @@ private:
 	int socket_desc, client_sock, c, read_size;
 	struct sockaddr_in server, client;
 
-	map<string, command> cmd{
-		{ "DELETE", DELETE },
-		{ "INSERT", INSERT },
-		{ "RANGE", RANGE },
-		{ "NEAREST", NEAREST },
-		{ "SUCCESS", SUCCESS },
-		{ "OBJECTS", OBJECTS },
-		{ "MBR", MBR }
-	};
-
 public:
 	struct message client_message;
 
 public:
-	TcpServer(string host, int port);
+	TcpServer(string host, uint16_t port);
 	bool bindSocket();
 	void listenToClient();
 	bool acceptConnection();

@@ -9,7 +9,7 @@
 
 #include "TcpServer.h"
 
-TcpServer::TcpServer(string host, int port)
+TcpServer::TcpServer(string host, uint16_t port)
 {
 	//Create socket
 	socket_desc = socket(AF_INET, SOCK_STREAM, 0);
@@ -50,7 +50,7 @@ void TcpServer::split(const string& s, char delimiter, string& command, vector<p
 void TcpServer::join(const string& command, vector<vector<pair<int, int>>>& objects, string& output) {
 	output = command;
 
-	switch (cmd[command])
+	switch (str2cmd[command])
 	{
 	case SUCCESS:
 

@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
 			server.join(server.client_message.command, objects, output);
 			cout << output << endl;
 			server.sendData(output);
+
 		} while (server.client_message.command != "EXIT");
 
 		cout << "Client disconnected" << endl;
