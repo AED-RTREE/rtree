@@ -1,13 +1,25 @@
+//============================================================================
+// Name        : main.cpp
+// Author      : Daniel Palomino
+// Version     : 0.1
+// Copyright   : Your copyright notice
+// Description : RTree Backend
+// Created on  : 31 jul. 2018
+//============================================================================
+
 #include <string>
 #include <vector>
 #include <iostream>
-#include "tcp_server.h"
+#include "TcpServer.h"
+#include "RTree.h"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
 	TcpServer server("localhost", 8080);
+	RTree rtree();
+
 	if (server.bindSocket()) {
 		server.listenToClient();
 	}
