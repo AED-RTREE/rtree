@@ -43,11 +43,11 @@ int main(int argc, char *argv[])
 				{
 				case INSERT:
 					rtree.insert(server.client_message.points);
-					/*rtree.mbr(objects);
-					server.join("MBRS", objects, output);*/
-					objects.push_back(server.client_message.points);
+					rtree.mbr(objects);
 					server.join("MBRS", objects, output);
-					cout << output << endl;
+					/*objects.push_back(server.client_message.points);
+					server.join("MBRS", objects, output);
+					cout << output << endl;*/
 					break;
 				case RANGE:
 					rtree.range(server.client_message.points, objects);
