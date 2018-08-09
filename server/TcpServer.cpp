@@ -25,40 +25,43 @@ TcpServer::TcpServer(string host, uint16_t port)
 	server.sin_port = htons(port);
 }
 
-void TcpServer::split(const string& s, char delimiter, string& command, vector<pair<int, int>>& tokens) {
+void TcpServer::split(const string& s, char delimiter, message& msg) {
 	string token;
 	istringstream tokenStream(s);
 	int x, y;
+	msg.command.resize(0);
+	msg.points.clear();
+	msg.k = -1;
 
 	getline(tokenStream, token, delimiter);
-	command.resize(0);
-	command = token;
+	msg.command = token;
+
+	if (msg.command == "NEAREST") {
+		getline(tokenStream, token, delimiter);
+		msg.k = stoi(token);
+	}
 
 	getline(tokenStream, token, delimiter);
-	int last = stoi(token);
-	for (int i = 0; i < last; i++) {
+	int num_points = stoi(token);
+	for (int i = 0; i < num_points; i++) {
 		getline(tokenStream, token, delimiter);
 		x = stoi(token);
 		getline(tokenStream, token, delimiter);
 		y = stoi(token);
-		tokens.push_back(make_pair(x, y));
+		msg.points.push_back(make_pair(x, y));
 	}
 
 	return;
 }
 
 void TcpServer::join(const string& command, vector<vector<pair<int, int>>>& objects, string& output) {
+	output.resize(0);
 	output = command;
 
-	switch (str2cmd[command])
+	switch (str2cmd(command))
 	{
-	case SUCCESS:
-
-		output += "|0";
-		break;
-
 	case OBJECTS:
-	case MBR:
+	case MBRS:
 
 		output += "|" + to_string(objects.size());
 		for (auto& polygon : objects) {
@@ -70,6 +73,10 @@ void TcpServer::join(const string& command, vector<vector<pair<int, int>>>& obje
 		}
 		break;
 
+	case DELETE:
+	case SUCCESS:
+	case FAIL:
+	case EXIT:
 	default:
 		output += "|0";
 		break;
@@ -115,7 +122,7 @@ bool TcpServer::acceptConnection()
 bool TcpServer::sendData(string data)
 {
 	fflush(stdout);
-	if (write(client_sock, data.c_str(), data.length()) != 0) {
+	if (write(client_sock, data.c_str(), data.length()+1) != 0) {
 		return false;
 	}
 
@@ -139,7 +146,7 @@ bool TcpServer::receiveData(int size = 512)
 		return false;
 	}
 
-	split(buffer, '|', client_message.command, client_message.points);
+	split(buffer, '|', client_message);
 
 	return true;
 }

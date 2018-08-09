@@ -14,7 +14,6 @@
 #include<string>
 #include<sstream>
 #include<vector>
-#include<map>
 #include<sys/socket.h>
 #include<arpa/inet.h> //inet_addr
 #include<unistd.h>    //write
@@ -24,13 +23,18 @@
 TRAMA:
 
 QUERIES:
-* DELETE|0|END
 * INSERT|1|100|230|END
 * RANGE|2|120|360|520|450|END
-* NEAREST|K|120|320|END
+* NEAREST|K|1|120|320|END
+* DELETE|0|END
 
 RESPONSES:
+* DELETE|0|END
 * SUCCESS|0|END
+* FAIL|0|END
+* EXIT|0|END
+
+FORMAT:
 
 COMMAND|N|X1|Y1|X2|Y2|END
 
@@ -42,6 +46,8 @@ END: Flag finalizador.
 ------------------------------------------
 * OBJECTS|2|1|12|32|2|65|256|23|65|END
 
+FORMAT:
+
 COMMAND|K|N1|X1|Y1|...|N2|X1|Y1|...|END
 
 COMMAND: Comando a utilizar en el rtree.
@@ -52,6 +58,8 @@ N1: Numero de Coordenadas del objeto siguiente.
 ------------------------------------------
 
 * MBR|2|2|120|360|520|450|2|120|360|520|450|END
+
+FORMAT:
 
 COMMAND|K|N1|X1|Y1|...|N2|X1|Y1|...|END
 
@@ -80,7 +88,7 @@ public:
 	bool acceptConnection();
 	bool sendData(string data);
 	bool receiveData(int size);
-	void split(const string& s, char delimiter, string& command, vector<pair<int, int>>& tokens);
+	void split(const string& s, char delimiter, message& msg);
 	void join(const string& command, vector<vector<pair<int, int>>>& objects, string& output);
 };
 

@@ -18,7 +18,10 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	TcpServer server("localhost", 8080);
-	RTree rtree();
+	RTree rtree;
+
+	string output;
+	vector<vector<pair<int, int>>> objects;
 
 	if (server.bindSocket()) {
 		server.listenToClient();
@@ -30,14 +33,47 @@ int main(int argc, char *argv[])
 
 	if (server.acceptConnection()) {
 		do {
-			server.receiveData(512);
-
-			string output;
 			vector<vector<pair<int, int>>> objects;
-			objects.push_back(server.client_message.points);
-			server.join(server.client_message.command, objects, output);
-			cout << output << endl;
-			server.sendData(output);
+
+			if (server.receiveData(512)) {
+				server.join("SUCCESS", objects, output);
+				server.sendData(output);
+
+				switch (str2cmd(server.client_message.command))
+				{
+				case INSERT:
+					rtree.insert(server.client_message.points);
+					/*rtree.mbr(objects);
+					server.join("MBRS", objects, output);*/
+					objects.push_back(server.client_message.points);
+					server.join("MBRS", objects, output);
+					cout << output << endl;
+					break;
+				case RANGE:
+					rtree.range(server.client_message.points, objects);
+					server.join("OBJECTS", objects, output);
+					break;
+				case NEAREST:
+					rtree.nearest(server.client_message.k, server.client_message.points, objects);
+					server.join("OBJECTS", objects, output);
+					break;
+				case DELETE:
+				case EXIT:
+					rtree.deleteAll();
+					server.join(server.client_message.command, objects, output);
+					break;
+				default:
+					server.join("FAIL", objects, output);
+					break;
+				}
+
+				server.sendData(output);
+				
+			}
+			else {
+				server.join("FAIL", objects, output);
+				server.sendData(output);
+			}
 
 		} while (server.client_message.command != "EXIT");
 
