@@ -42,12 +42,12 @@ int main(int argc, char *argv[])
 				switch (str2cmd(server.client_message.command))
 				{
 				case INSERT:
-					rtree.insert(server.client_message.points);
+					/*rtree.insert(server.client_message.points);
 					rtree.mbr(objects);
+					server.join("MBRS", objects, output);*/
+					objects.push_back(server.client_message.points);
 					server.join("MBRS", objects, output);
-					/*objects.push_back(server.client_message.points);
-					server.join("MBRS", objects, output);
-					cout << output << endl;*/
+					cout << output << endl;
 					break;
 				case RANGE:
 					rtree.range(server.client_message.points, objects);
