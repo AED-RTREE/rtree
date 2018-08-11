@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 				{
 				case INSERT:
 					/*rtree.insert(server.client_message.points);
-					rtree.mbr(objects);
+					rtree.getMBRs(objects);
 					server.join("MBRS", objects, output);*/
 					objects.push_back(server.client_message.points);
 					server.join("MBRS", objects, output);
