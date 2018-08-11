@@ -19,10 +19,10 @@ MBR::MBR(vector<pair<int, int>> pol)//el MBR que cubre al poligono
 	y1 = poligono[0].second;
 	y2 = poligono[0].second;
 	if (poligono.size() == 1) {//Si "poligono" es un punto
-		x1 -= 5; x2 += 5; y1 -= 5; y += 5;
+		x1 -= 5; x2 += 5; y1 -= 5; y2 += 5;
 	}
 	else {//si el poligono tiene mas puntos
-		for (int i = 1; i<poligono.size(); i++) {
+		for (unsigned int i = 1; i<poligono.size(); i++) {
 			if (poligono[i].first<x1) {
 				x1 = poligono[i].first;
 			}

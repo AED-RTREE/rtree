@@ -18,7 +18,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	TcpServer server("localhost", 8080);
-	RTree rtree;
+	RTree rtree(2);
 
 	string output;
 	vector<vector<pair<int, int>>> objects;

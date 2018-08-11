@@ -23,8 +23,8 @@ private:
 	MBR * head;
 	int M, m; //para saber cuantos hijos debe tener cada nodo   
 public:
-	RTree(int ord = 3);
-	void insert(vector<pair<int, int>> polygon);//inserta polygon en el rtree
+	RTree(int ord);
+	bool insert(vector<pair<int, int>> polygon);//inserta polygon en el rtree
 	bool getMBRs(vector<vector<pair<int, int>>>& mbrs);//devuelve todos los MBRs del rtree
 	bool range(vector<pair<int, int>> polygon, vector<vector<pair<int, int>>>& objects);//retorna los objects dentro de polygon
 	bool nearest(int k, vector<pair<int, int>> point, vector<vector<pair<int, int>>>& objects);//retorn los k objects más cercanos a point
