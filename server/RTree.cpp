@@ -20,7 +20,7 @@ RTree::RTree(int ord = 2)
 
 bool RTree::insert(vector<pair<int, int>> polygon)
 {
-	/*MBR* fig = new MBR(polygon);
+	MBR* fig = new MBR(polygon);
 
 	if (head->subMbr == NULL && head->coMbr == NULL) {//la primerafigura insertada
 		head->subMbr = fig;
@@ -58,7 +58,7 @@ bool RTree::insert(vector<pair<int, int>> polygon)
 
 
 		//Modificar MBR's del recorrido                             
-	}*/
+	}
 
 	return true;
 }
