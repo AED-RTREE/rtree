@@ -30,10 +30,16 @@ sudo apt-get update
 sudo apt-get install build-essential libssl-dev
 ```
 
-Compilar y ejecutar:
+Compilar:
 
 ```
-make exec
+make build
+```
+
+Ejecutar:
+
+```
+./out/server
 ```
 
 # R-Tree: App
