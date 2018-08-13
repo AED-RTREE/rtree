@@ -262,3 +262,6 @@ __pycache__/
 
 # Makefile
 out/
+
+# Python
+env

@@ -28,4 +28,7 @@
       <UniqueIdentifier>{25b3e2a8-ee22-4f63-87bd-9263189311f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+  </ItemGroup>
 </Project>
