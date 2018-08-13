@@ -1,7 +1,7 @@
 //============================================================================
 // Name        : main.cpp
-// Author      : Daniel Palomino
-// Version     : 0.1
+// Author      : Daniel Palomino / Vittorino Mandujano
+// Version     : 1.0
 // Copyright   : Your copyright notice
 // Description : RTree Backend
 // Created on  : 31 jul. 2018

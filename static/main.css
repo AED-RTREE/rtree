@@ -1,0 +1,65 @@
+* {
+	margin: 0px;
+	padding:0px;
+}
+body {
+    font-family: 'Adamina';
+    background: #eeeefe;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+p {
+	margin: 2px;
+	padding: 0px;
+}
+
+.block-canvas{
+	float: left;
+	background: #efeefe;
+	
+}
+.title{
+	font-family: 'Adamina';
+	font-size: 22px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.sub-title{
+	font-family: 'Adamina';
+	font-size: 14px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.radio-text{
+	font-family: 'Adamina';
+	font-size: 13px;
+}
+
+.radio-button{
+	width: 10px;
+}
+.console{
+	font-family: 'Ubuntu Mono';
+	font-size: 13px;
+}
+
+.button{
+	border-radius: 4px;
+}
+.button-text{
+	background-color: #555;
+	font-family: 'Adamina';
+	font-size: 14px;
+	padding: 4px;
+	border: none;
+	width: 80px;
+	cursor: pointer;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 0px;
+	color: #FFFFFF;
+}
+

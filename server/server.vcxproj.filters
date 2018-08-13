@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="RTree.cpp">
+      <Filter>cpp files</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpServer.cpp">
+      <Filter>cpp files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RTree.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpServer.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="header files">
+      <UniqueIdentifier>{1bc511ba-8db4-49e0-bef5-1a622f4f914c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cpp files">
+      <UniqueIdentifier>{25b3e2a8-ee22-4f63-87bd-9263189311f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

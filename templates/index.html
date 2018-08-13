@@ -1,0 +1,63 @@
+<!-- 
+ **********************
+ * Autor: Jose Chavez *
+ **********************
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+	<title>R-Tree UCSP</title>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css')}}"/>
+	<link href='https://fonts.googleapis.com/css?family=Adamina' rel='stylesheet'>
+	<link href='https://fonts.googleapis.com/css?family=Ubuntu Mono' rel='stylesheet'>
+</head>
+<body>
+	<div>
+		<div class="block-canvas" id="myDiv">
+			<canvas id="myRec" width="854" height="480" style="border:1px solid #d3d3d3;"></canvas>
+		</div>
+	</div>
+	<div>
+		<div style="position: relative; left: 50px; ">
+			<h1 class="title">R-Tree Demo</h1><h2 class="sub-title">UCSP</h2>
+			<button class="button button-text" onclick="fndiv1()">Draw</button>
+			<div id="div1" style="display: none;">
+				<form name="radForm">
+					<div>
+						<input class="radio-button" type="radio" value="polygon" name="radioButtons" onclick="radfn(this)" checked/>
+						<label class="radio-text" >polygon</label>
+					</div>
+				<input type="radio" value="point" name="radioButtons" onclick="radfn(this)">
+				<label class="radio-text" >point</label>
+				</form>
+				<p class="console"  style="position: relative; left: 5px;" id="poltexid"></p>
+				<p class="console" id="mousepoint" style="position: relative; left: 5px;"></p>
+			</div><br>
+			<button class="button button-text" onclick="fndiv2()">Search</button>
+			<div id="div2" style="display: none; position: relative; left: 10px; ">
+				<p class="console"  id="rect-search">></p>
+			</div><br>
+			<button class="button button-text" onclick="fndiv3()">K-Nearest</button>
+			<div id="div3" style="display: none; position: relative; left: 10px; "><br>
+				<input type="number" min="0" value="0" placeholder="0" id="myk"/>
+				<button onclick="fnSearch()">Set</button>
+				<p class="console"  id="knearst-text"></p>
+			</div><br>
+			<button class="button button-text" onclick="clearfn()">Delete All</button>
+			<form action="{{ url_for('clear')}}" method="post" id="post-id">
+			</form>
+			<div id="mySocket"></div>		
+		</div>
+	</div>
+<script type="text/javascript">
+	var ob_str = '{{ result|tojson|safe }}';
+	var ob = JSON.parse(ob_str);
+	var array_recv = ob.data_ob;
+</script>
+<script type = "text/javascript" src="{{ url_for('static', filename='scr.js')}}"></script>
+</script>
+</body>
+</html>
