@@ -11,7 +11,29 @@ sudo apt-get install build-essential
 
 # App
 
-Instalación de **npm** [LINK](https://www.digitalocean.com/community/tutorials/como-instalar-node-js-en-ubuntu-16-04-es):
+# R-Tree: Front-end
+
+Instalar Python (2.7.12):
+```
+sudo apt-get instal python2.7 
+```
+Instalar Pip:
+```
+sudo apt-get install python-pip
+```
+Instalar Flask:
+```
+pip install flask
+```
+Ejecutar el servidor que esta en la carpeta "server": 
+```
+g++ -o out -std=c++11 main.cpp<br/>
+./out
+```
+Ejecutar el archivo "app.py" de la carpeta raiz:
+```
+python app.py
+```
 
 
 ```
