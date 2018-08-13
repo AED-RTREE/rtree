@@ -1031,16 +1031,20 @@ bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int
 		nodo = cp_root;
 		Branch mbranch;
 
+		if (cp_root->m_count == 0) {
+			return true;
+		}
+
 		for (int ii = 0; ii <= cp_root->m_level; ii++) {
 
 			float dist = numeric_limits<float>::max();
 			for (int jj = 0; jj<nodo->m_count; jj++) {
-				if (point.first<nodo->m_branch[jj].m_rect.m_min[0]) { x = nodo->m_branch[0].m_rect.m_min[0]; }
-				else if (nodo->m_branch[jj].m_rect.m_max[0]<point.first) { x = nodo->m_branch[0].m_rect.m_max[0]; }
+				if (point.first < nodo->m_branch[jj].m_rect.m_min[0]) { x = nodo->m_branch[jj].m_rect.m_min[0]; }
+				else if (nodo->m_branch[jj].m_rect.m_max[0] < point.first) { x = nodo->m_branch[jj].m_rect.m_max[0]; }
 				else { x = point.first; }
 
-				if (point.first<nodo->m_branch[jj].m_rect.m_min[1]) { y = nodo->m_branch[0].m_rect.m_min[1]; }
-				else if (nodo->m_branch[jj].m_rect.m_max[1]<point.first) { y = nodo->m_branch[0].m_rect.m_max[1]; }
+				if (point.first < nodo->m_branch[jj].m_rect.m_min[1]) { y = nodo->m_branch[jj].m_rect.m_min[1]; }
+				else if (nodo->m_branch[jj].m_rect.m_max[1] < point.first) { y = nodo->m_branch[jj].m_rect.m_max[1]; }
 				else { y = point.second; }
 
 				float tdist = (x - point.first)*(x - point.first) + (y - point.second)*(y - point.second);
