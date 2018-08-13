@@ -36,9 +36,7 @@ Compilar y ejecutar:
 make exec
 ```
 
-# App
-
-# R-Tree: Frontend
+# R-Tree: App
 
 Moverse a la carpeta **app**:
 
