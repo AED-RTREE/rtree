@@ -129,7 +129,7 @@ bool TcpServer::sendData(string data)
 	return true;
 }
 
-bool TcpServer::receiveData(int size = 512)
+bool TcpServer::receiveData(int size = 1024)
 {
 	char buffer[size];
 
