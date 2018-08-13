@@ -2,7 +2,7 @@
 // Name        : RTree.h
 // Author      : Daniel Palomino / Vittorino Mandujano
 // Version     : 1.0
-// Copyright   : Your copyright notice
+// Copyright   : GNU General Public License v3.0
 // Description : RTree Backend
 // Created on  : 08 ago. 2018
 //============================================================================

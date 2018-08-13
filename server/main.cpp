@@ -2,7 +2,7 @@
 // Name        : main.cpp
 // Author      : Daniel Palomino / Vittorino Mandujano
 // Version     : 1.0
-// Copyright   : Your copyright notice
+// Copyright   : GNU General Public License v3.0
 // Description : RTree Backend
 // Created on  : 31 jul. 2018
 //============================================================================
@@ -71,7 +71,7 @@ bool MySearchCallback(ValueType id)
 		cout << "( " << point.first << ", " << point.second << "),";
 	}
 	cout << endl;
-	return true; // keep going
+	return true;
 }
 
 
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 		do {
 			vector<vector<pair<int, int>>> objects;
 
-			if (server.receiveData(512)) {
+			if (server.receiveData(1024)) {
 				server.join("SUCCESS", objects, output);
 				server.sendData(output);
 
@@ -107,9 +107,6 @@ int main(int argc, char *argv[])
 					rtree.Insert(rect.min, rect.max, server.client_message.points);
 					rtree.getMBRs(objects);
 					server.join("MBRS", objects, output);
-					/*objects.push_back(server.client_message.points);
-					server.join("MBRS", objects, output);
-					cout << output << endl;*/
 					break;
 				}
 				case RANGE:

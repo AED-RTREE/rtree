@@ -2,7 +2,7 @@
 // Name        : utils.h
 // Author      : Daniel Palomino
 // Version     : 1.0
-// Copyright   : Your copyright notice
+// Copyright   : GNU General Public License v3.0
 // Description : RTree Backend
 // Created on  : 31 jul. 2018
 //============================================================================
