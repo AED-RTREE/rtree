@@ -67,6 +67,7 @@
     <ClCompile Include="TcpServer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lrtree.h" />
     <ClInclude Include="MBR.h" />
     <ClInclude Include="RTree.h" />
     <ClInclude Include="TcpServer.h" />
