@@ -13,24 +13,24 @@ sudo apt-get install build-essential
 
 # R-Tree: Front-end
 
-1. Instalar Python (2.7.12):<br/>
+1. Instalar Python (2.7.12):
 ```
 sudo apt-get instal python2.7 
 ```
-2. Instalar Pip:<br/>
+2. Instalar Pip:
 ```
 sudo apt-get install python-pip
 ```
-3. Instalar Flask:<br/>
+3. Instalar Flask:
 ```
 pip install flask
 ```
-4. Ejecutar el servidor que esta en la carpeta "server":<br/> 
+4. Ejecutar el servidor que esta en la carpeta "server": 
 ```
 g++ -o out -std=c++11 main.cpp<br/>
 ./out
 ```
-5. Ejecutar el archivo "app.py" de la carpeta raiz:<br/>
+5. Ejecutar el archivo "app.py" de la carpeta raiz:
 ```
 python app.py
 ```
