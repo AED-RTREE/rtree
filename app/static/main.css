@@ -3,7 +3,7 @@
 	padding:0px;
 }
 body {
-    font-family: 'Adamina';
+    font-family: 'Actor';
     background: #eeeefe;
     margin-left: 10px;
     margin-top: 10px;
@@ -20,26 +20,34 @@ p {
 	
 }
 .title{
-	font-family: 'Adamina';
+	font-family: 'Actor';
 	font-size: 22px;
 	margin-top: 5px;
 	margin-bottom: 5px;
 }
 
 .sub-title{
-	font-family: 'Adamina';
+	font-family: 'Actor';
 	font-size: 14px;
 	margin-top: 5px;
 	margin-bottom: 5px;
 }
 
 .radio-text{
-	font-family: 'Adamina';
+	font-family: 'Actor';
 	font-size: 13px;
+	padding: 5px;
 }
 
 .radio-button{
-	width: 10px;
+	width: 5px;
+}
+.button-div{
+	margin-bottom: 5px;
+	margin-top: 5px;	
+}
+.div-position{
+	margin: 10px 0px;
 }
 .console{
 	font-family: 'Ubuntu Mono';
@@ -51,7 +59,7 @@ p {
 }
 .button-text{
 	background-color: #555;
-	font-family: 'Adamina';
+	font-family: 'Actor';
 	font-size: 14px;
 	padding: 4px;
 	border: none;

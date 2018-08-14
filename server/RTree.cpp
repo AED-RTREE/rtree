@@ -990,6 +990,7 @@ bool RTree::getMBRs(vector<vector<vector<pair<int, int>>>>& mbrs_n)
 		mbrs.push_back(q);
 	}
 	mbrs_n.push_back(mbrs);
+	mbrs.clear();
 
 	while (n--) {
 		//theBranches(v, w);
@@ -1015,6 +1016,7 @@ bool RTree::getMBRs(vector<vector<vector<pair<int, int>>>>& mbrs_n)
 
 		mbrs_n.push_back(mbrs);
 		w.clear();
+		mbrs.clear();
 	}
 	return true;
 }

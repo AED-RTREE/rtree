@@ -70,7 +70,7 @@ public:
 	// Stuck up here for MSVC 6 compiler.  NSVC .NET 2003 is much happier.
 	enum
 	{
-		MAXNODES = 8,                         ///< Max elements in node
+		MAXNODES = 4,                         ///< Max elements in node
 		MINNODES = MAXNODES / 2,                         ///< Min elements in node
 	};
 
