@@ -108,7 +108,7 @@ public:
 	int Count();
 
 	/// get the MBRs;
-	bool getMBRs(vector<vector<pair<int, int>>>& mbrs);
+	bool getMBRs(vector<vector<vector<pair<int, int>>>>& mbrs_n);
 	bool nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int, int>>>& v);
 
 protected:

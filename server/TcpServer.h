@@ -57,14 +57,15 @@ N1: Numero de Coordenadas del objeto siguiente.
 
 ------------------------------------------
 
-* MBR|2|2|120|360|520|450|2|120|360|520|450|END
+* MBRS|2|2|2|120|360|520|450|2|120|360|520|450|1|2|12|32|14|22|END
 
 FORMAT:
 
-COMMAND|K|N1|X1|Y1|...|N2|X1|Y1|...|END
+COMMAND|K|M1|N1|X1|Y1|...|N2|X1|Y1|...|END
 
 COMMAND: Comando a utilizar en el rtree.
-K: Numero de MBRs siguientes
+K: Numero de nivels.
+M1: Numero de MBRs siguientes del primer nivel.
 N1=2: Numero de Coordenadas del MBR siguiente.
 ((X1,Y1),(X2,Y2)): Primer MBR.
 
@@ -89,7 +90,7 @@ public:
 	bool sendData(string data);
 	bool receiveData(int size);
 	void split(const string& s, char delimiter, message& msg);
-	void join(const string& command, vector<vector<pair<int, int>>>& objects, string& output);
+	void join(const string& command, vector<vector<vector<pair<int, int>>>>& objects_n, string& output);
 };
 
 #endif

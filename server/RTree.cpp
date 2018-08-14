@@ -965,10 +965,11 @@ bool RTree::Search(Node* a_node, Rect* a_rect, int& a_foundCount, vector<vector<
 }
 
 
-bool RTree::getMBRs(vector<vector<pair<int, int>>>& mbrs)
+bool RTree::getMBRs(vector<vector<vector<pair<int, int>>>>& mbrs_n)
 {
 	vector<Branch> v, w;
-	mbrs.clear();
+	mbrs_n.clear();
+	vector<vector<pair<int, int>>> mbrs;
 
 	int n = (m_root->m_level);
 
@@ -988,6 +989,8 @@ bool RTree::getMBRs(vector<vector<pair<int, int>>>& mbrs)
 		q.push_back(p);
 		mbrs.push_back(q);
 	}
+	mbrs_n.push_back(mbrs);
+
 	while (n--) {
 		//theBranches(v, w);
 		for (int i = 0; i<v.size(); i++) {
@@ -1010,6 +1013,7 @@ bool RTree::getMBRs(vector<vector<pair<int, int>>>& mbrs)
 			mbrs.push_back(q);
 		}
 
+		mbrs_n.push_back(mbrs);
 		w.clear();
 	}
 	return true;

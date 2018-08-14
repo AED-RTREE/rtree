@@ -54,21 +54,35 @@ void TcpServer::split(const string& s, char delimiter, message& msg) {
 	return;
 }
 
-void TcpServer::join(const string& command, vector<vector<pair<int, int>>>& objects, string& output) {
+void TcpServer::join(const string& command, vector<vector<vector<pair<int, int>>>>& objects_n, string& output) {
 	output.resize(0);
 	output = command;
 
 	switch (str2cmd(command))
 	{
 	case OBJECTS:
-	case MBRS:
-
-		output += "|" + to_string(objects.size());
-		for (auto& polygon : objects) {
+		output += "|" + to_string(objects_n[0].size());
+		for (auto& polygon : objects_n[0]) {
 			output += "|" + to_string(polygon.size());
 
 			for (auto& point : polygon) {
 				output += "|" + to_string(point.first) + "|" + to_string(point.second);
+			}
+		}
+		break;
+
+	case MBRS:
+
+		output += "|" + to_string(objects_n.size());
+		for (auto& objects : objects_n) {
+			output += "|" + to_string(objects.size());
+
+			for (auto& polygon : objects) {
+				output += "|" + to_string(polygon.size());
+
+				for (auto& point : polygon) {
+					output += "|" + to_string(point.first) + "|" + to_string(point.second);
+				}
 			}
 		}
 		break;
