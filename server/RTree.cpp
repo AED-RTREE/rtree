@@ -1043,8 +1043,8 @@ bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int
 				else if (nodo->m_branch[jj].m_rect.m_max[0] < point.first) { x = nodo->m_branch[jj].m_rect.m_max[0]; }
 				else { x = point.first; }
 
-				if (point.first < nodo->m_branch[jj].m_rect.m_min[1]) { y = nodo->m_branch[jj].m_rect.m_min[1]; }
-				else if (nodo->m_branch[jj].m_rect.m_max[1] < point.first) { y = nodo->m_branch[jj].m_rect.m_max[1]; }
+				if (point.second < nodo->m_branch[jj].m_rect.m_min[1]) { y = nodo->m_branch[jj].m_rect.m_min[1]; }
+				else if (nodo->m_branch[jj].m_rect.m_max[1] < point.second) { y = nodo->m_branch[jj].m_rect.m_max[1]; }
 				else { y = point.second; }
 
 				float tdist = (x - point.first)*(x - point.first) + (y - point.second)*(y - point.second);
