@@ -3,10 +3,12 @@ Implementación de R-Tree usando una interface web para la visualización de dat
 
 ![](https://raw.githubusercontent.com/AED-RTREE/rtree/master/image.png)
 
+# Instrucciones:
+
 Clonar el repositorio:
 
 ```
-git clone https://gitlab.com/AED-RTREE/rtree.git
+git clone https://github.com/AED-RTREE/rtree.git
 ```
 
 Moverse a la carpeta descargada:
@@ -15,11 +17,11 @@ Moverse a la carpeta descargada:
 cd ($DOWNLOAD-PATH)/rtree
 ```
 
-Abrir 2 terminales: Primero ejecutar el **Servidor** y en el otro ejecutar el **App**.
+Abrir 2 terminales: Primero ejecutar el **Server** y luego, en el otro, ejecutar el **App**.
 
 Finalmente abrir un navegador y colocar la siguiente url: http://localhost:5000
 
-# R-Tree: Server
+## R-Tree: Server
 
 Moverse a la carpeta **server**:
 
@@ -46,7 +48,7 @@ Ejecutar:
 ./out/server
 ```
 
-# R-Tree: App
+## R-Tree: App
 
 Moverse a la carpeta **app**:
 
