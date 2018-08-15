@@ -1,10 +1,31 @@
-// ****************************************
-// ********** Autor: Jose Chavez **********
-// ****************************************
+// 	****************************************
+// 	********** Autor: Jose Chavez **********
+// 	****************************************
 
-// Set Canvas
-// ****************************************
+// 	Set Canvas
+// 	******************************************************
+/*	En siguiente script contiene las funciones necesarias
+	para visualizar los MBR (Minimum Bounding Box), asi
+	como tambien la funcion RANGE y K-NEAREST del R-Tree.
 
+	A continuacion se muestran algunos parametros relevantes:
+
+	polygons 	: 	Todos los poligonos que el usuario a dibujado.
+	points 		: 	Todos los puntos que el usuario a dibujado.
+
+	npoint 		: 	El punto respectivo para la funcion K-Nearest.
+
+	xcur, ycur	: 	Posicion actual del mouse utilizados en la
+					funcion "setNewPosition".
+
+	xmov, ymov	: 	Posicion del mouse en movimiento utilizado para
+					delimitar el area de dibujo.
+	
+	plgon_toSend:   Poligono que se envia por el socket
+	point_toSend: 	Punto que se envia por el socket
+	
+	rectSearch 	: 	Rectangulo de busqueda temporal
+*/
 
 var c = document.getElementById("myRec");
 var csize = c.getBoundingClientRect();
@@ -14,22 +35,11 @@ var ctx = c.getContext("2d");
 ctx.lineWidth=1.5;
 
 ctx.fillStyle = "rgba(170,170,187,0.5)";
-ctx.font = "10px Arial";
+ctx.font = "12px Comic Sans MS"
 
-
-var polygon  = [];
+var plgon_toSend  = [];
 var points   = [];
 var npoint = [];
-
-var xmov = 1000;
-var ymov = 1000;
-
-var xini = 0;
-var yini = 0;
-var xcur = 0;
-var ycur = 0;
-
-
 
 // *****************************************
 
@@ -52,40 +62,38 @@ if (ob.MBRs_arr != null){
 	MBRsToPlot = ob.MBRs_arr;
 }
 
-var rectSearch 	= [];
-if (ob.rectSearch_arr != null){
-	rectSearch = ob.rectSearch;
-}
 
-var polygon = [];
+
+
+var xcur = 0;
+var ycur = 0;
+var xmov = - csize.left - 1;
+var ymov = - csize.top - 1;
+
+var plgon_toSend = [];
 var point_toSend;
+var rectSearch 	= [];
+
 
 var data_to_send="";
 var data_to_rcv="";
 var data_rect="";
 var data_knrt="";
-var xmov = - csize.left - 1;
-var ymov = - csize.top - 1;
-
-var xini = 0;
-var yini = 0;
-var xcur = 0;
-var ycur = 0;
 
 var d1 = document.getElementById("div1");
 var d2 = document.getElementById("div2");
 var d3 = document.getElementById("div3");
 
-//var poln = 0;
+//	var poln = 0;
 
-// Parameters To Save
-// ******************************************************************
+// 	Parameters To Save
+// 	******************************************************************
 
 var Prms = {};
-Prms.newfig_FLAG = false;
+Prms.newfig_FLAG 	= false;
 
-// Restore Values
-// ******************************************************************
+// 	Restore Values
+// 	******************************************************************
 Prms.down_FLAG 		= JSON.parse(ob.get_down_FLAG);
 Prms.radio_FLAG 	= ob.get_radio_FLAG;
 Prms.draw_FLAG 		= JSON.parse(ob.get_draw_FLAG);
@@ -107,7 +115,8 @@ Prms.rSX4			= JSON.parse(ob.get_rSX4);
 document.getElementById("poltexid").innerHTML 	= Prms.polText_FLAG;
 document.getElementById("mousepoint").innerHTML = Prms.coorText_FLAG;
 document.getElementById("myk").value = Prms.k_FLAG;
-var knearest_text = "location : ("+Prms.Nrst_pX+","+Prms.Nrst_pY+") | k = "+Prms.k_FLAG;
+
+var knearest_text = "Location : ("+Prms.Nrst_pX+","+Prms.Nrst_pY+") | k = "+Prms.k_FLAG;
 document.getElementById("knearst-text").innerHTML = knearest_text;
 
 var text_Rect = "Rect: [("+Prms.rSX1+","+Prms.rSX2+"),("+Prms.rSX3+","+Prms.rSX4+")]";
@@ -158,6 +167,7 @@ if (Prms.rSX3 != -1 ){
 // **********************************
 
 
+
 function setrSX_Points(trSX1, trSX2, trSX3, trSX4){
 	Prms.rSX1 = trSX1;
 	Prms.rSX2 = trSX2;
@@ -165,30 +175,38 @@ function setrSX_Points(trSX1, trSX2, trSX3, trSX4){
 	Prms.rSX4 = trSX4;	
 }
 
-function PlotMRBs(MBRs_data) {
-    var num_nivels = MBRs_data[0];
-    if (num_nivels != 0) {
-        var num_MBRs = MBRs_data[1];
-        for (var n = 0; n < num_nivels; n++) {
-            
-            if (num_MBRs != 0) {
-                var iter = 2;
-                var num_Points;
-                ctx.strokeStyle = "blue";
-                for (var iMBR = 0; iMBR < num_MBRs; iMBR++) {
-                    num_Points = MBRs_data[iter];
-                    ctx.beginPath();
-                    ctx.rect(MBRs_data[iter], MBRs_data[iter + 1], MBRs_data[iter + 2] - MBRs_data[iter], MBRs_data[iter + 3] - MBRs_data[iter + 1]);
-                    ctx.stroke();
-                    iter += 5;
-                }
-            }
-
-            num_MBRs
-            
-        }
-    }
+function idOf(i) {
+	return (i >= 26 ? idOf((i / 26 >> 0) - 1) : '') +  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i % 26 >> 0];
 }
+
+function PlotMRBs(MBRs_data){
+	var num_Levels = MBRs_data[0];
+	var PaletColors = ob.get_RandomColors;
+
+	if (num_Levels != 0){
+		var iter_MBR = 0;
+		iter_MBR += 1;
+		for (var iLevel = 0; iLevel < num_Levels; iLevel++) {
+			
+			var num_MBRs_LUnit = MBRs_data[iter_MBR] ;
+			ctx.strokeStyle = PaletColors[iLevel];
+			iter_MBR += 2;
+			var label = idOf(iLevel);
+			ctx.fillStyle = PaletColors[iLevel];
+			for (var iMBR_Level = 0; iMBR_Level < num_MBRs_LUnit; iMBR_Level++) {
+				ctx.beginPath();
+				ctx.rect(MBRs_data[iter_MBR],MBRs_data[iter_MBR+1],MBRs_data[iter_MBR+2]-MBRs_data[iter_MBR], MBRs_data[iter_MBR+3]-MBRs_data[iter_MBR+1]);
+				ctx.stroke();
+				ctx.fillText(label+(iMBR_Level+1).toString(),parseInt(MBRs_data[iter_MBR])+5,parseInt(MBRs_data[iter_MBR+1])+15); 
+				iter_MBR += 5;
+			}
+
+			iter_MBR -= 1;
+		}
+	}
+	ctx.fillStyle = "rgba(170,170,187,0.5)";
+}
+
 
 function PlotObjects(OBJs_data){
 	var num_OBJs = OBJs_data[0];
@@ -204,17 +222,32 @@ function PlotObjects(OBJs_data){
 			if (num_Points == 2){
 				ctx.strokeStyle="#A5D700";
 				ctx.rect(OBJs_data[iterSearch+1],OBJs_data[iterSearch+2],1.3,1.3);
+				if (Prms.nearest_FLAG == true){
+					ctx.moveTo(OBJs_data[iterSearch+1],OBJs_data[iterSearch+2]);
+					ctx.lineTo(Prms.Nrst_pX,Prms.Nrst_pY);					
+				}
+
 				ctx.stroke();
 				iterSearch += 3;
 			}
 			else {
 				ctx.strokeStyle="#141419";
+				var centerX= parseInt(OBJs_data[iterSearch+1]);
+				var centerY= parseInt(OBJs_data[iterSearch+2]);
 				ctx.moveTo(OBJs_data[iterSearch+1],OBJs_data[iterSearch+2]);
 				for (var iobj_cc = 2; iobj_cc < num_Points - 1; iobj_cc+=2) {
+					centerX += parseInt(OBJs_data[iterSearch+1+iobj_cc]);
+					centerY += parseInt(OBJs_data[iterSearch+2+iobj_cc]);
 					ctx.lineTo(OBJs_data[iterSearch+1+iobj_cc],OBJs_data[iterSearch+2+iobj_cc]);
 				}
 				ctx.lineTo(OBJs_data[iterSearch+1],OBJs_data[iterSearch+2]);
 				ctx.fill();
+				if (Prms.nearest_FLAG == true){
+					ctx.strokeStyle="#A5D700";
+					ctx.moveTo(centerX/(num_Points/2),centerY/(num_Points/2));
+					ctx.lineTo(Prms.Nrst_pX,Prms.Nrst_pY);					
+				}
+
 				ctx.stroke();
 				iterSearch += num_Points + 1;			
 			}
@@ -258,12 +291,12 @@ function PostFn(postVal){
 	var hField_Polygon = document.createElement("input");
 	hField_Polygon.setAttribute("type", "hidden");	
 	hField_Polygon.setAttribute("name", 'polygon');
-	if (polygon.length == 0){
+	if (plgon_toSend.length == 0){
 		var nullval = [[false]];
 		hField_Polygon.setAttribute("value", nullval);
 	}
 	else{
-		hField_Polygon.setAttribute("value", polygon);
+		hField_Polygon.setAttribute("value", plgon_toSend);
 	}
 
 //	Guardar Puntos	
@@ -360,7 +393,10 @@ function draw(){
 	if (Prms.nearest_FLAG == true && Prms.Nrst_pX >= 0 && Prms.Nrst_pY >= 0){
 		ctx.strokeStyle="#A5D700";
 		ctx.beginPath();
-		ctx.rect(Prms.Nrst_pX,Prms.Nrst_pY,1.3,1.3);
+		ctx.rect(Prms.Nrst_pX-1,Prms.Nrst_pY-1,2,2);
+
+		ctx.strokeStyle="#141419";
+		ctx.rect(Prms.Nrst_pX-0.5,Prms.Nrst_pY-0.5,1,1);
 		ctx.stroke();
 		var knearest_text = "location : ("+Prms.Nrst_pX+","+Prms.Nrst_pY+") | k = "+Prms.k_FLAG;
 		document.getElementById("knearst-text").innerHTML = knearest_text;
@@ -403,7 +439,7 @@ function isInt(num){
 	return (rval | 0) === rval;
 }
 
-function fnSearch(myk){
+function fnNeasrest(){
 	ClosePolygon();
 	var temp = document.getElementById("myk").value;
 	if (isInt(temp)){
@@ -435,12 +471,12 @@ function ClosePolygon(){
 			if (lastpol[0]!= lastpol[lastpol.length-2] || lastpol[1]!=lastpol[lastpol.length-1]){
 				lastpol = lastpol.concat([lastpol[0],lastpol[1]]);
 				polygons[last] = lastpol;
-				polygon = [];
+				plgon_toSend = [];
 			}
 		}
 		else{
 			polygons[last] = [];
-			polygon = [];
+			plgon_toSend = [];
 		}
 	}
 }
@@ -471,31 +507,31 @@ function setNewPosition(event){
 
 		else if (Prms.radio_FLAG == "polygon"){
 			if (xcur < 854 && xcur >= 0 && ycur < 480 && ycur >= 0){
-				if (polygon.length > 4) {
-					if (Math.pow(polygon[0]-xcur,2)+Math.pow(polygon[1]-ycur,2)<100){
-						xcur = polygon[0];
-						ycur = polygon[1];
+				if (plgon_toSend.length > 4) {
+					if (Math.pow(plgon_toSend[0]-xcur,2)+Math.pow(plgon_toSend[1]-ycur,2)<100){
+						xcur = plgon_toSend[0];
+						ycur = plgon_toSend[1];
 						Prms.newfig_FLAG = true;
 					}
 				}
 
-				polygon = polygon.concat([xcur, ycur]);
+				plgon_toSend = plgon_toSend.concat([xcur, ycur]);
 				var lenpoly = polygons.length;
-				polygons[lenpoly] = polygon;
+				polygons[lenpoly] = plgon_toSend;
 				Prms.polText_FLAG = "[";
-				for (var ipt = 0; ipt < polygon.length-1; ipt+=2) {
-					Prms.polText_FLAG += "("+ polygon[ipt] +"," + polygon[ipt+1] + ")";
+				for (var ipt = 0; ipt < plgon_toSend.length-1; ipt+=2) {
+					Prms.polText_FLAG += "("+ plgon_toSend[ipt] +"," + plgon_toSend[ipt+1] + ")";			
 				}
 				Prms.polText_FLAG += "]";
 				document.getElementById("poltexid").innerHTML = Prms.polText_FLAG
-				xini = xcur;
-				yini = ycur;
+				//xini = xcur;
+				//yini = ycur;
 
 				if (Prms.newfig_FLAG == true){
-					var polygon_to_send = polygon.slice(0, polygon.length - 2);
+					var polygon_to_send = plgon_toSend.slice(0, plgon_toSend.length - 2);
 					Prms.newfig_FLAG = false;
 					send_fig(polygon_to_send);
-					polygon = [];
+					plgon_toSend = [];
 
 				}
 			}
@@ -603,11 +639,13 @@ function MouseDownFn(event){
 		if (xdown < 854 && xdown >= 0 && ydown < 480 && ydown >= 0){
 			Prms.Nrst_pX=xdown;
 			Prms.Nrst_pY=ydown;
-			if(isInt(Prms.k_FLAG)){
-				if(Prms.k_FLAG>=0){
-					send_knearest(Prms.Nrst_pX,Prms.Nrst_pY,Prms.k_FLAG);
-				}
-			}
+			fnNeasrest();
+			send_knearest(Prms.Nrst_pX,Prms.Nrst_pY,Prms.k_FLAG);
+			//if(isInt(Prms.k_FLAG)){
+			//	if(Prms.k_FLAG>=0){
+			//		send_knearest(Prms.Nrst_pX,Prms.Nrst_pY,Prms.k_FLAG);
+			//	}
+			//}
 		}
 	}
 	setNewPosition(event);
@@ -635,6 +673,11 @@ function MouseUpFn(event){
 	}
 }
 
+//document.onkeydown = function(e) {
+//	if (e.keyCode === 116){
+//		console.log("F5");
+//	}
+//}
 document.addEventListener("mousedown", MouseDownFn);
 document.addEventListener("mouseup", MouseUpFn);
 document.addEventListener("mousemove", MouseMoveFn);

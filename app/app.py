@@ -1,11 +1,15 @@
-# **********************
-# * Autor: Jose Chavez *
-# **********************
+# ****************************************************************
+# ********************** Autor: Jose Chavez **********************
+# ****************************************************************
+
+# Flask 		: 	framework de Python que permite la creacion de la
+#					aplicacion web
 
 import os
 import socket
 import sys
 import ast
+import random
 
 from flask import Flask
 from flask import request
@@ -19,14 +23,69 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 app = Flask(__name__)
 app.debug = True
 
+random.seed(2)
+
+# Parametros
+# ****************************************************************
+
+# count			: 	indica que el se realiza la conexion solo la
+# 					primera vez que se abre la pagina
+
+# plgons_arr	:   polygonos 
+# points_arr	:	puntos
+
+# MBRs_saved	: 	conjunto de MBRs
+# data 			:	un diccionario en donde se almacenan todos los
+#					parametros que son devueltos desde el servidor
+#					al cliente
+
 count = 0
 plgons_arr = []
 points_arr = [] 
 MBRs_saved = [0]
 data = {}
 
+RandomColors = []
+Hex = "0123456789ABCDEF"
+for i in range(100):
+	strColor = "rgba("
+	for i in range(3):
+		strColor += str(random.randint(0,255)) + ","
+	strColor += "0.9)" 
+	RandomColors.append(strColor)
+
+def RecvData(tagToSend):
+	global s, count
+
+	print('Client(Send) ==>', tagToSend)
+	
+	s.send(str(tagToSend)+"\0")
+	data_recv_str = s.recv(4096)
+	print('Client(Recv) <==', data_recv_str)
+	
+	data_recv = str(data_recv_str).split('\x00')
+	print('data_recv : ', data_recv, ", len = ", len(data_recv))
+
+	if len(data_recv) == 2:
+		init = data_recv[0].split('|')	
+		if init[0]=='SUCCESS':
+			print("success!")
+			data_str = s.recv(4096)
+			data_arr = data_str.split('|')
+			print("data_arr :", data_arr)
+
+	elif len(data_recv) == 3:
+		init = data_recv[0].split('|')
+		if init[0] == 'SUCCESS':
+			print('success!')
+			del_str = data_recv[1]
+			data_arr  = del_str.split('|')
+			print("data_arr :", data_arr)
+
+	return data_arr
+
 def resetData():
-	global data, plgons_arr, points_arr
+	global data, plgons_arr, points_arr, MBRs_saved
 	plgons_arr = []
 	points_arr = [] 
 	MBRs_saved = [0]
@@ -57,13 +116,20 @@ def resetData():
 	data['get_rSX3']		= "-1";
 	data['get_rSX4']		= "-1";
 
-
+	data['get_RandomColors']= RandomColors;
 @app.route('/')
 @app.route('/index')
 def hello():
-	global plgons_arr, points_arr, data, MBRs_saved
-	resetData()
-
+	global plgons_arr, points_arr, data, MBRs_saved, s, count
+	if (count == 0):
+		s.connect((shost, sport))
+	tag_to_send = "DELETE|0|END"
+	del_ob = RecvData(tag_to_send)
+	if (del_ob [0] == "DELETE"):
+		resetData()
+		print('DATA(Recv) <== RESET')
+	
+	count += 1
 	return render_template('index.html',result=data)
 
 @app.route('/', methods=['POST'])
@@ -75,40 +141,12 @@ def CommFunc():
 	reset_FLAG = str(tag_to_send).split('|')[0]
 	
 	if (reset_FLAG == "DELETE"):
-		print('Client(Send) ==>', tag_to_send)
-		s.send(str(tag_to_send)+"\0")
-		bar = s.recv(1024)
-		print('Client(Recv) <==', bar)
+		del_ob = RecvData(tag_to_send)
+		if (del_ob [0] == "DELETE"):
+			resetData()
+			print('DATA(Recv) <== RESET')
+			return render_template('index.html', result=data)		
 		
-
-		bar_ob = str(bar).split('\x00')
-		print('BAR_OB', bar_ob, ", len = ", len(bar_ob))
-
-		if len(bar_ob) == 2:
-			print("if == 2")
-			init = bar_ob[0].split('|')	
-			if init[0]=='SUCCESS':
-				print("success!")
-				del_str=s.recv(1024)
-				del_ob = del_str.split('|')
-
-				if (del_ob[0] == "DELETE"):
-					resetData()
-					print('DATA(Recv) <== RESET')
-					return render_template('index.html', result=data)
-
-		elif len(bar_ob) == 3:
-			print("if == 3")
-			init = bar_ob[0].split('|')
-			if init[0] == 'SUCCESS':
-				print('success!')
-				del_str = bar_ob[1]
-				del_ob  = del_str.split('|')
-				if (del_ob [0] == "DELETE"):
-					resetData()
-					print('DATA(Recv) <== RESET')
-					return render_template('index.html', result=data)
-	
 	tag_polygons = request.form['polygon']
 	tag_points   = request.form['points']
 	tag_MBRs	 = request.form['mbrsreq']
@@ -132,37 +170,10 @@ def CommFunc():
 	tag_rSX3			= request.form['rSX3']
 	tag_rSX4			= request.form['rSX4']
 
-	if (count == 0):
-		s.connect((shost, sport))
-
-	print('Client(Send) ==>', tag_to_send)
-	s.send(str(tag_to_send)+"\0")
-	
-	bar = s.recv(1024)
-	print('Client(Recv) <==', bar)	
-	bar_ob = str(bar).split('\x00')
-	print('BAR_OB', bar_ob, ", len = ", len(bar_ob))
-	if len(bar_ob) == 2:
-		print("if == 2")
-		init = bar_ob[0].split('|')	
-		if init[0]=='SUCCESS':
-			print("success!")
-			mbrs=s.recv(1024)
-			mbr_ob = mbrs.split('|')
-			x00 = mbr_ob[-1]
-			mbr_ob[-1] = x00[:-2]
-			print('DATA(Recv) <==', mbr_ob)
-
-	if len(bar_ob) == 3:
-		print("if == 3")
-		init = bar_ob[0].split('|')
-		if init[0] == 'SUCCESS':
-			print('success!')
-			mbrs = bar_ob[1]
-			mbr_ob = mbrs.split('|')
-			x00 = mbr_ob[-1]
-			mbr_ob[-1] = x00[:-2]
-			print('DATA(Recv) <==', mbr_ob)
+	mbr_ob = RecvData(tag_to_send)
+	x00 = mbr_ob[-1]
+	mbr_ob[-1] = x00[:-2]
+	print('DATA(Recv) <==', mbr_ob)
 
 	if not (tag_polygons == 'false'): 
 		plgons_unit = ast.literal_eval(tag_polygons)

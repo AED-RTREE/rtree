@@ -6,13 +6,16 @@
 <!DOCTYPE html>
 <html lang="en">
 {% include 'header.html' %}
-<body>
-	<div>
+<body onkeydown="return (event.keyCode != 154)">
+	<div class="content">
 		<div class="block-canvas" id="myDiv">
 			<canvas id="myRec" width="854" height="480" style="border:1px solid #d3d3d3;"></canvas>
+			<div class="footer">
+				<p class="copyright" >&copy; Copyright 2018<p>	
+			</div>
 		</div>
+		{% include 'buttons.html' %}
 	</div>
-	{% include 'buttons.html' %}
 <script type="text/javascript">
 	var ob_str = '{{ result|tojson|safe }}';
 	var ob = JSON.parse(ob_str);

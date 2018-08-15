@@ -14,10 +14,17 @@ p {
 	padding: 0px;
 }
 
+.content{
+	float: bottom;
+}
 .block-canvas{
 	float: left;
 	background: #efeefe;
 	
+}
+
+.buttons-div{
+	float: none;
 }
 .title{
 	font-family: 'Actor';
@@ -71,3 +78,9 @@ p {
 	color: #FFFFFF;
 }
 
+.copyright{
+	float: top;
+
+	font-family:none;
+	font-size: 12px;
+}

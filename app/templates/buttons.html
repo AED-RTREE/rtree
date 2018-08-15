@@ -1,0 +1,37 @@
+		<div class="buttons-div">
+			<div style="position: relative; left: 50px; ">
+				<h1 class="title">R-Tree Demo</h1>
+				<h2 class="sub-title">Universidad Católica San Pablo</h2>
+				<button class="button button-text" onclick="fndiv1()">Insert</button>
+				<div id="div1" style="display: none;">
+					<form name="radForm">
+						<div class="button-div">
+							<input class="radio-button" type="radio" value="polygon" name="radioButtons" onclick="radfn(this)" checked/>
+							<label class="radio-text" >polygon</label>
+						</div>
+						<div class="button-div">
+							<input class="radio-button" type="radio" value="point" name="radioButtons" onclick="radfn(this)">
+							<label class="radio-text" >point</label>						
+						</div>
+					</form>
+					<div class="div-position">
+						<p class="console"  style="position: relative; left: 5px;" id="poltexid"></p>
+						<p class="console" id="mousepoint" style="position: relative; left: 5px;"></p>					
+					</div>
+
+				</div><br>
+				<button class="button button-text" onclick="fndiv2()">Range</button>
+				<div id="div2" style="display: none; position: relative; left: 10px; ">
+					<p class="console"  id="rect-search">></p>
+				</div><br>
+				<button class="button button-text" onclick="fndiv3()">Nearest</button>
+				<div id="div3" style="display: none; position: relative; left: 10px; "><br>
+					<input type="number" min="0" value="0" placeholder="0" id="myk" style="width: 55px;" />
+					<button onclick="fnNeasrest()">Set</button>
+					<p class="console"  id="knearst-text"></p>
+				</div><br>
+				<button class="button button-text" onclick="ClearFn()">Delete All</button>
+				<form action="{{ url_for('CommFunc')}}" method="post" id="post-id">
+				</form>
+			</div>	
+		</div>
