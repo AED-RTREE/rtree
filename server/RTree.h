@@ -29,8 +29,6 @@ using namespace std;
 #define Min min
 #define Max max
 
-#define RTREE_USE_SPHERICAL_VOLUME // Better split classification, may be slower on some systems
-
 class RTree
 {
 public:
@@ -50,6 +48,7 @@ public:
 	/// get the MBRs;
 	bool getMBRs(vector<vector<vector<pair<int, int>>>>& mbrs_n);
 	bool nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int, int>>>& v);
+	Rect MBR(vector<pair<int, int>> pol);
 
 protected:
 
@@ -65,8 +64,6 @@ protected:
 	int PickBranch(const Rect* a_rect, Node* a_node);
 	Rect CombineRect(const Rect* a_rectA, const Rect* a_rectB);
 	void SplitNode(Node* a_node, const Branch* a_branch, Node** a_newNode);
-	float RectSphericalVolume(Rect* a_rect);
-	float RectVolume(Rect* a_rect);
 	float CalcRectVolume(Rect* a_rect);
 	void GetBranches(Node* a_node, const Branch* a_branch, PartitionVars* a_parVars);
 	void ChoosePartition(PartitionVars* a_parVars, int a_minFill);

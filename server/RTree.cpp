@@ -511,27 +511,9 @@ void RTree::SplitNode(Node* a_node, const Branch* a_branch, Node** a_newNode)
 }
 
 
-// Calculate the n-dimensional volume of a rectangle
-float RTree::RectVolume(Rect* a_rect)
-{
-	ASSERT(a_rect);
+// Use one of the methods to calculate retangle volume
 
-	float volume = (float)1;
-
-	for (int index = 0; index<2; ++index)
-	{
-		volume *= a_rect->m_max[index] - a_rect->m_min[index];
-	}
-
-	ASSERT(volume >= (float)0);
-
-	return volume;
-}
-
-
-// The exact volume of the bounding sphere for the given Rect
-
-float RTree::RectSphericalVolume(Rect* a_rect)
+float RTree::CalcRectVolume(Rect* a_rect)
 {
 	ASSERT(a_rect);
 
@@ -546,20 +528,8 @@ float RTree::RectSphericalVolume(Rect* a_rect)
 
 	radius = (float)sqrt(sumOfSquares);
 
-	
+
 	return (radius * radius * m_unitSphereVolume);
-}
-
-
-// Use one of the methods to calculate retangle volume
-
-float RTree::CalcRectVolume(Rect* a_rect)
-{
-#ifdef RTREE_USE_SPHERICAL_VOLUME
-	return RectSphericalVolume(a_rect); // Slower but helps certain merge cases
-#else // RTREE_USE_SPHERICAL_VOLUME
-	return RectVolume(a_rect); // Faster but can cause poor merges
-#endif // RTREE_USE_SPHERICAL_VOLUME  
 }
 
 
@@ -1060,4 +1030,33 @@ bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int
 		RemoveRect(&mbranch.m_rect, mbranch.m_data, &cp_root);// arreglar?! 
 	}
 	return true;
+}
+
+Rect RTree::MBR(vector<pair<int, int>> pol)//el MBR que cubre al poligono
+{
+	int x1 = pol[0].first;
+	int x2 = pol[0].first;
+	int y1 = pol[0].second;
+	int y2 = pol[0].second;
+	if (pol.size() == 1) {//Si "poligono" es un punto
+		x1 -= 5; x2 += 5; y1 -= 5; y2 += 5;
+	}
+	else {//si el poligono tiene mas puntos
+		for (unsigned int i = 1; i < pol.size(); i++) {
+			if (pol[i].first < x1) {
+				x1 = pol[i].first;
+			}
+			if (x2 < pol[i].first) {
+				x2 = pol[i].first;
+			}
+			if (pol[i].second < y1) {
+				y1 = pol[i].second;
+			}
+			if (y2 < pol[i].second) {
+				y2 = pol[i].second;
+			}
+		}
+	}
+
+	return Rect(x1, y1, x2, y2);
 }
