@@ -1,6 +1,8 @@
 # R-Tree
 Implementación de R-Tree usando una interface web para la visualización de datos.
 
+![](https://raw.githubusercontent.com/AED-RTREE/rtree/master/image.png)
+
 Clonar el repositorio:
 
 ```
