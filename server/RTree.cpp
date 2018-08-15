@@ -32,10 +32,10 @@ RTree::~RTree()
 }
 
 
-void RTree::Insert(const int a_min[NUMDIMS], const int a_max[NUMDIMS], const vector<pair<int, int>>& a_dataId)
+void RTree::Insert(const int a_min[2], const int a_max[2], const vector<pair<int, int>>& a_dataId)
 {
 #ifdef _DEBUG
-	for (int index = 0; index<NUMDIMS; ++index)
+	for (int index = 0; index<2; ++index)
 	{
 		ASSERT(a_min[index] <= a_max[index]);
 	}
@@ -45,7 +45,7 @@ void RTree::Insert(const int a_min[NUMDIMS], const int a_max[NUMDIMS], const vec
 	branch.m_data = a_dataId;
 	branch.m_child = NULL;
 
-	for (int axis = 0; axis<NUMDIMS; ++axis)
+	for (int axis = 0; axis<2; ++axis)
 	{
 		branch.m_rect.m_min[axis] = a_min[axis];
 		branch.m_rect.m_max[axis] = a_max[axis];
@@ -55,10 +55,10 @@ void RTree::Insert(const int a_min[NUMDIMS], const int a_max[NUMDIMS], const vec
 }
 
 
-void RTree::Remove(const int a_min[NUMDIMS], const int a_max[NUMDIMS], const vector<pair<int, int>>& a_dataId)
+void RTree::Remove(const int a_min[2], const int a_max[2], const vector<pair<int, int>>& a_dataId)
 {
 #ifdef _DEBUG
-	for (int index = 0; index<NUMDIMS; ++index)
+	for (int index = 0; index<2; ++index)
 	{
 		ASSERT(a_min[index] <= a_max[index]);
 	}
@@ -66,7 +66,7 @@ void RTree::Remove(const int a_min[NUMDIMS], const int a_max[NUMDIMS], const vec
 
 	Rect rect;
 
-	for (int axis = 0; axis<NUMDIMS; ++axis)
+	for (int axis = 0; axis<2; ++axis)
 	{
 		rect.m_min[axis] = a_min[axis];
 		rect.m_max[axis] = a_max[axis];
@@ -79,7 +79,7 @@ void RTree::Remove(const int a_min[NUMDIMS], const int a_max[NUMDIMS], const vec
 int RTree::Search(const pair<int,int> a_min, const pair<int, int> a_max, vector<vector<pair<int, int>>>& objs) const
 {
 #ifdef _DEBUG
-	for (int index = 0; index<NUMDIMS; ++index)
+	for (int index = 0; index<2; ++index)
 	{
 		ASSERT(a_min[index] <= a_max[index]);
 	}
@@ -88,7 +88,7 @@ int RTree::Search(const pair<int,int> a_min, const pair<int, int> a_max, vector<
 	objs.clear();
 	Rect rect;
 
-	for (int axis = 0; axis<NUMDIMS; ++axis)
+	for (int axis = 0; axis<2; ++axis)
 	{
 		rect.m_min[0] = a_min.first;
 		rect.m_min[1] = a_min.second;
@@ -144,11 +144,11 @@ void RTree::CopyRec(Node* current, Node* other)
 			Branch* otherBranch = &other->m_branch[index];
 
 			std::copy(otherBranch->m_rect.m_min,
-				otherBranch->m_rect.m_min + NUMDIMS,
+				otherBranch->m_rect.m_min + 2,
 				currentBranch->m_rect.m_min);
 
 			std::copy(otherBranch->m_rect.m_max,
-				otherBranch->m_rect.m_max + NUMDIMS,
+				otherBranch->m_rect.m_max + 2,
 				currentBranch->m_rect.m_max);
 
 			currentBranch->m_child = AllocNode();
@@ -163,11 +163,11 @@ void RTree::CopyRec(Node* current, Node* other)
 			Branch* otherBranch = &other->m_branch[index];
 
 			std::copy(otherBranch->m_rect.m_min,
-				otherBranch->m_rect.m_min + NUMDIMS,
+				otherBranch->m_rect.m_min + 2,
 				currentBranch->m_rect.m_min);
 
 			std::copy(otherBranch->m_rect.m_max,
-				otherBranch->m_rect.m_max + NUMDIMS,
+				otherBranch->m_rect.m_max + 2,
 				currentBranch->m_rect.m_max);
 
 			currentBranch->m_data = otherBranch->m_data;
@@ -209,7 +209,7 @@ void RTree::RemoveAllRec(Node* a_node)
 }
 
 
-typename RTree::Node* RTree::AllocNode()
+Node* RTree::AllocNode()
 {
 	Node* newNode;
 	newNode = new Node;
@@ -228,7 +228,7 @@ void RTree::FreeNode(Node* a_node)
 
 // Allocate space for a node in the list used in DeletRect to
 // store Nodes that are too empty.
-typename RTree::ListNode* RTree::AllocListNode()
+ListNode* RTree::AllocListNode()
 {
 	return new ListNode;
 }
@@ -249,7 +249,7 @@ void RTree::InitNode(Node* a_node)
 
 void RTree::InitRect(Rect* a_rect)
 {
-	for (int index = 0; index < NUMDIMS; ++index)
+	for (int index = 0; index < 2; ++index)
 	{
 		a_rect->m_min[index] = (int)0;
 		a_rect->m_max[index] = (int)0;
@@ -330,7 +330,7 @@ bool RTree::InsertRect(const Branch& a_branch, Node** a_root, int a_level)
 	ASSERT(a_root);
 	ASSERT(a_level >= 0 && a_level <= (*a_root)->m_level);
 #ifdef _DEBUG
-	for (int index = 0; index < NUMDIMS; ++index)
+	for (int index = 0; index < 2; ++index)
 	{
 		ASSERT(a_branch.m_rect.m_min[index] <= a_branch.m_rect.m_max[index]);
 	}
@@ -367,7 +367,7 @@ bool RTree::InsertRect(const Branch& a_branch, Node** a_root, int a_level)
 
 
 // Find the smallest rectangle that includes all rectangles in branches of a node.
-typename RTree::Rect RTree::NodeCover(Node* a_node)
+Rect RTree::NodeCover(Node* a_node)
 {
 	ASSERT(a_node);
 
@@ -463,13 +463,13 @@ int RTree::PickBranch(const Rect* a_rect, Node* a_node)
 
 
 // Combine two rectangles into larger one containing both
-typename RTree::Rect RTree::CombineRect(const Rect* a_rectA, const Rect* a_rectB)
+Rect RTree::CombineRect(const Rect* a_rectA, const Rect* a_rectB)
 {
 	ASSERT(a_rectA && a_rectB);
 
 	Rect newRect;
 
-	for (int index = 0; index < NUMDIMS; ++index)
+	for (int index = 0; index < 2; ++index)
 	{
 		newRect.m_min[index] = Min(a_rectA->m_min[index], a_rectB->m_min[index]);
 		newRect.m_max[index] = Max(a_rectA->m_max[index], a_rectB->m_max[index]);
@@ -518,7 +518,7 @@ float RTree::RectVolume(Rect* a_rect)
 
 	float volume = (float)1;
 
-	for (int index = 0; index<NUMDIMS; ++index)
+	for (int index = 0; index<2; ++index)
 	{
 		volume *= a_rect->m_max[index] - a_rect->m_min[index];
 	}
@@ -538,7 +538,7 @@ float RTree::RectSphericalVolume(Rect* a_rect)
 	float sumOfSquares = (float)0;
 	float radius;
 
-	for (int index = 0; index < NUMDIMS; ++index)
+	for (int index = 0; index < 2; ++index)
 	{
 		float halfExtent = ((float)a_rect->m_max[index] - (float)a_rect->m_min[index]) * 0.5f;
 		sumOfSquares += halfExtent * halfExtent;
@@ -546,19 +546,8 @@ float RTree::RectSphericalVolume(Rect* a_rect)
 
 	radius = (float)sqrt(sumOfSquares);
 
-	// Pow maybe slow, so test for common dims like 2,3 and just use x*x, x*x*x.
-	if (NUMDIMS == 3)
-	{
-		return (radius * radius * radius * m_unitSphereVolume);
-	}
-	else if (NUMDIMS == 2)
-	{
-		return (radius * radius * m_unitSphereVolume);
-	}
-	else
-	{
-		return (float)(pow(radius, NUMDIMS) * m_unitSphereVolume);
-	}
+	
+	return (radius * radius * m_unitSphereVolume);
 }
 
 
@@ -898,7 +887,7 @@ bool RTree::Overlap(Rect* a_rectA, Rect* a_rectB) const
 {
 	ASSERT(a_rectA && a_rectB);
 
-	for (int index = 0; index < NUMDIMS; ++index)
+	for (int index = 0; index < 2; ++index)
 	{
 		if (a_rectA->m_min[index] > a_rectB->m_max[index] ||
 			a_rectB->m_min[index] > a_rectA->m_max[index])
@@ -977,7 +966,7 @@ bool RTree::getMBRs(vector<vector<vector<pair<int, int>>>>& mbrs_n)
 		v.push_back(m_root->m_branch[i]);
 	}
 
-	for (int i = 0; i<v.size(); i++) {
+	for (unsigned int i = 0; i<v.size(); i++) {
 		vector<pair<int, int>> q;
 		pair<int, int> p;
 
@@ -994,14 +983,14 @@ bool RTree::getMBRs(vector<vector<vector<pair<int, int>>>>& mbrs_n)
 
 	while (n--) {
 		//theBranches(v, w);
-		for (int i = 0; i<v.size(); i++) {
+		for (unsigned int i = 0; i<v.size(); i++) {
 			for (int j = 0; j<(v[i].m_child->m_count); j++) {
 				w.push_back(v[i].m_child->m_branch[j]);
 			}
 		}
 
 		v = w;
-		for (int i = 0; i<v.size(); i++) {
+		for (unsigned int i = 0; i<v.size(); i++) {
 			vector<pair<int, int>> q;
 			pair<int, int> p;
 
@@ -1043,7 +1032,7 @@ bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int
 
 		for (int ii = 0; ii <= cp_root->m_level; ii++) {
 
-			float dist = numeric_limits<float>::max();
+			int dist = numeric_limits<int>::max();
 			for (int jj = 0; jj<nodo->m_count; jj++) {
 				if (point.first < nodo->m_branch[jj].m_rect.m_min[0]) { x = nodo->m_branch[jj].m_rect.m_min[0]; }
 				else if (nodo->m_branch[jj].m_rect.m_max[0] < point.first) { x = nodo->m_branch[jj].m_rect.m_max[0]; }
@@ -1053,7 +1042,7 @@ bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int
 				else if (nodo->m_branch[jj].m_rect.m_max[1] < point.second) { y = nodo->m_branch[jj].m_rect.m_max[1]; }
 				else { y = point.second; }
 
-				float tdist = (x - point.first)*(x - point.first) + (y - point.second)*(y - point.second);
+				int tdist = (x - point.first)*(x - point.first) + (y - point.second)*(y - point.second);
 
 				if (tdist < dist) {
 					dist = tdist;

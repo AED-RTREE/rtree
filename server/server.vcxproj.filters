@@ -16,7 +16,13 @@
     <ClInclude Include="TcpServer.h">
       <Filter>header files</Filter>
     </ClInclude>
-    <ClInclude Include="utils.h">
+    <ClInclude Include="Structs.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
       <Filter>header files</Filter>
     </ClInclude>
   </ItemGroup>

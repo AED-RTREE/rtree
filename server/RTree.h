@@ -10,9 +10,6 @@
 #ifndef RTREE_H
 #define RTREE_H
 
-// NOTE This file compiles under MSVC 6 SP5 and MSVC .Net 2003 it may not work on other compilers without modification.
-
-// NOTE These next few lines may be win32 specific, you may need to modify them to compile on other platform
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
@@ -23,85 +20,28 @@
 #include <vector>
 #include <limits>
 
-#define ASSERT assert // RTree uses ASSERT( condition )
-#ifndef Min
-#define Min std::min
-#endif //Min
-#ifndef Max
-#define Max std::max
-#endif //Max
+#include "Constants.h"
+#include "Structs.h"
 
 using namespace std;
 
+#define ASSERT assert // RTree uses ASSERT( condition )
+#define Min min
+#define Max max
+
 #define RTREE_USE_SPHERICAL_VOLUME // Better split classification, may be slower on some systems
-
-
-
-/// \class RTree
-/// Implementation of RTree, a multidimensional bounding rectangle tree.
-/// Example usage: For a 3-dimensional tree use RTree<Object*, float, 3> myTree;
-///
-/// This modified, templated C++ version by Greg Douglas at Auran (http://www.auran.com)
-///
-/// DATATYPE Referenced data, should be int, void*, obj* etc. no larger than sizeof<void*> and simple type
-/// ELEMTYPE Type of element such as int or float
-/// NUMDIMS Number of dimensions such as 2 or 3
-/// ELEMTYPEREAL Type of element that allows fractional and large values such as float or double, for use in volume calcs
-///
-/// NOTES: Inserting and removing data requires the knowledge of its constant Minimal Bounding Rectangle.
-///        This version uses new/delete for nodes, I recommend using a fixed size allocator for efficiency.
-///        Instead of using a callback function for returned results, I recommend and efficient pre-sized, grow-only memory
-///        array similar to MFC CArray or STL Vector for returning search query result.
-///
-/*template<class DATATYPE, class ELEMTYPE, int NUMDIMS,
-class ELEMTYPEREAL = ELEMTYPE, int TMAXNODES = 8, int TMINNODES = TMAXNODES / 2>*/
-
-#define NUMDIMS 2
 
 class RTree
 {
-protected:
-
-	struct Node;  // Fwd decl.  Used by other internal structs and iterator
-
-public:
-
-	// These constant must be declared after Branch and before Node struct
-	// Stuck up here for MSVC 6 compiler.  NSVC .NET 2003 is much happier.
-	enum
-	{
-		MAXNODES = 4,                         ///< Max elements in node
-		MINNODES = MAXNODES / 2,                         ///< Min elements in node
-	};
-
 public:
 
 	RTree();
 	RTree(const RTree& other);
 	virtual ~RTree();
 
-	/// Insert entry
-	/// \param a_min Min of bounding rect
-	/// \param a_max Max of bounding rect
-	/// \param a_dataId Positive Id of data.  Maybe zero, but negative numbers not allowed.
-	void Insert(const int a_min[NUMDIMS], const int a_max[NUMDIMS], const vector<pair<int, int>>& a_dataId);
-
-	/// Remove entry
-	/// \param a_min Min of bounding rect
-	/// \param a_max Max of bounding rect
-	/// \param a_dataId Positive Id of data.  Maybe zero, but negative numbers not allowed.
-	void Remove(const int a_min[NUMDIMS], const int a_max[NUMDIMS], const vector<pair<int, int>>& a_dataId);
-
-	/// Find all within search rectangle
-	/// \param a_min Min of search bounding rect
-	/// \param a_max Max of search bounding rect
-	/// \param a_searchResult Search result array.  Caller should set grow size. Function will reset, not append to array.
-	/// \param a_resultCallback Callback function to return result.  Callback should return 'true' to continue searching
-	/// \param a_context User context to pass as parameter to a_resultCallback
-	/// \return Returns the number of entries found
+	void Insert(const int a_min[2], const int a_max[2], const vector<pair<int, int>>& a_dataId);
+	void Remove(const int a_min[2], const int a_max[2], const vector<pair<int, int>>& a_dataId);
 	int Search(const pair<int, int> a_min, const pair<int, int> a_max, vector<vector<pair<int, int>>>& objs) const;
-
-	/// Remove all entries from tree
 	void RemoveAll();
 
 	/// Count the data elements in this container.  This is slow as no internal counter is maintained.
@@ -112,59 +52,6 @@ public:
 	bool nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int, int>>>& v);
 
 protected:
-
-	/// Minimal bounding rectangle (n-dimensional)
-	struct Rect
-	{
-		int m_min[NUMDIMS];                      ///< Min dimensions of bounding box 
-		int m_max[NUMDIMS];                      ///< Max dimensions of bounding box 
-	};
-
-	/// May be data or may be another subtree
-	/// The parents level determines this.
-	/// If the parents level is 0, then this is data
-	struct Branch
-	{
-		Rect m_rect;                                  ///< Bounds
-		Node* m_child;                                ///< Child node
-		vector<pair<int, int>> m_data;                              ///< Data Id
-	};
-
-	/// Node for each branch level
-	struct Node
-	{
-		bool IsInternalNode() { return (m_level > 0); } // Not a leaf, but a internal node
-		bool IsLeaf() { return (m_level == 0); } // A leaf, contains data
-
-		int m_count;                                  ///< Count
-		int m_level;                                  ///< Leaf is zero, others positive
-		Branch m_branch[MAXNODES];                    ///< Branch
-	};
-
-	/// A link list of nodes for reinsertion after a delete operation
-	struct ListNode
-	{
-		ListNode* m_next;                             ///< Next in list
-		Node* m_node;                                 ///< Node
-	};
-
-	/// Variables for finding a split partition
-	struct PartitionVars
-	{
-		enum { NOT_TAKEN = -1 }; // indicates that position
-
-		int m_partition[MAXNODES + 1];
-		int m_total;
-		int m_minFill;
-		int m_count[2];
-		Rect m_cover[2];
-		float m_area[2];
-
-		Branch m_branchBuf[MAXNODES + 1];
-		int m_branchCount;
-		Rect m_coverSplit;
-		float m_coverSplitArea;
-	};
 
 	Node* AllocNode();
 	void FreeNode(Node* a_node);

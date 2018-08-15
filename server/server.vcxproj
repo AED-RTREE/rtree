@@ -66,9 +66,11 @@
     <ClCompile Include="TcpServer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="RTree.h" />
+    <ClInclude Include="Structs.h" />
     <ClInclude Include="TcpServer.h" />
-    <ClInclude Include="utils.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

@@ -15,8 +15,8 @@
 #include<sstream>
 #include<vector>
 #include<sys/socket.h>
-#include<arpa/inet.h> //inet_addr
-#include<unistd.h>    //write
+#include<arpa/inet.h>
+#include<unistd.h>
 #include "utils.h"
 
 /*

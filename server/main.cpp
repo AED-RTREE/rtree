@@ -17,24 +17,6 @@ using namespace std;
 
 typedef vector<pair<int, int>> ValueType;
 
-struct Rect
-{
-	Rect() {}
-
-	Rect(int a_minX, int a_minY, int a_maxX, int a_maxY)
-	{
-		min[0] = a_minX;
-		min[1] = a_minY;
-
-		max[0] = a_maxX;
-		max[1] = a_maxY;
-	}
-
-
-	int min[2];
-	int max[2];
-};
-
 Rect MBR(ValueType pol)//el MBR que cubre al poligono
 {
 	int x1 = pol[0].first;
@@ -105,7 +87,7 @@ int main(int argc, char *argv[])
 				case INSERT:
 				{
 					Rect rect = MBR(server.client_message.points);
-					rtree.Insert(rect.min, rect.max, server.client_message.points);
+					rtree.Insert(rect.m_min, rect.m_max, server.client_message.points);
 					rtree.getMBRs(objects_n);
 					server.join("MBRS", objects_n, output);
 					break;
@@ -126,7 +108,6 @@ int main(int argc, char *argv[])
 				case EXIT:
 				{
 					rtree.RemoveAll();
-					//rtree.deleteAll();
 					server.join(server.client_message.command, objects_n, output);
 					break;
 				}
