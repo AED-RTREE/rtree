@@ -15,6 +15,8 @@ cd ($DOWNLOAD-PATH)/rtree
 
 Abrir 2 terminales: Primero ejecutar el **Servidor** y en el otro ejecutar el **App**.
 
+Finalmente abrir un navegador y colocar la siguiente url: http://localhost:5000
+
 # R-Tree: Server
 
 Moverse a la carpeta **server**:
@@ -68,7 +70,7 @@ Instalar Flask:
 pip install flask
 ```
 
-Ejecutar el archivo **app.py** de la carpeta raíz:
+Ejecutar el archivo **app.py** de la carpeta:
 
 ```
 python app.py
