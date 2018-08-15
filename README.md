@@ -1,7 +1,7 @@
 # R-Tree
 Implementación de R-Tree usando una interface web para la visualización de datos.
 
-![](https://raw.githubusercontent.com/AED-RTREE/rtree/master/image.png)
+![alt text](https://raw.githubusercontent.com/AED-RTREE/rtree/master/image.png)
 
 # Instrucciones:
 
@@ -17,7 +17,7 @@ Moverse a la carpeta descargada:
 cd ($DOWNLOAD-PATH)/rtree
 ```
 
-Abrir 2 terminales: Primero ejecutar el **Server** y luego, en el otro, ejecutar el **App**.
+Abrir 2 terminales: Primero ejecutar el **Server** y luego, en el otro, ejecutar el **App** (La ejecución de ambas aplicaciones está explicada líneas abajo).
 
 Finalmente abrir un navegador y colocar la siguiente url: http://localhost:5000
 
