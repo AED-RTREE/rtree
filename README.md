@@ -19,7 +19,7 @@ cd ($DOWNLOAD-PATH)/rtree
 
 Abrir 2 terminales: Primero ejecutar el **Server** y luego, en el otro, ejecutar el **App** (La ejecución de ambas aplicaciones está explicada líneas abajo).
 
-Finalmente abrir un navegador y colocar la siguiente url: http://localhost:5000
+
 
 ## R-Tree: Server
 
@@ -79,3 +79,5 @@ Ejecutar el archivo **app.py** de la carpeta:
 ```
 python app.py
 ```
+
+Finalmente abrir un navegador y colocar la siguiente url: http://localhost:5000
