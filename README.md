@@ -5,6 +5,10 @@ Implementación de R-Tree usando una interface web para la visualización de dat
 
 # Instrucciones:
 
+El desarrollo de la siguiente aplicación fue realizada usando la distribución de Linux: **Ubuntu 18.04 y 16.04**,
+esto es importante porque la libería de socket utilizada **socket.h** se encuentra disponible solo en distribuciones Linux.
+
+
 Clonar el repositorio:
 
 ```
