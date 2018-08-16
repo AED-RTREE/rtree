@@ -63,7 +63,7 @@ cd ($DOWNLOAD-PATH)/rtree/app
 Instalar Python (2.7.12):
 
 ```
-sudo apt-get instal python2.7 
+sudo apt-get install python2.7 
 ```
 
 Instalar Pip:
