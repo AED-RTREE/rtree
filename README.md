@@ -5,9 +5,7 @@ Implementación de R-Tree usando una interface web para la visualización de dat
 
 # Instrucciones:
 
-El desarrollo de la siguiente aplicación fue realizada usando la distribución de Linux: **Ubuntu 18.04 y 16.04**,
-esto es importante porque la libería de socket utilizada **socket.h** se encuentra disponible solo en distribuciones Linux.
-
+El desarrollo de la siguiente aplicación fue realizada usando la distribución de Mac High Sierra 10.13
 
 Clonar el repositorio:
 
@@ -36,8 +34,8 @@ cd ($DOWNLOAD-PATH)/rtree/server
 Instalación de dependencias:
 
 ```
-sudo apt-get update
-sudo apt-get install build-essential libssl-dev
+brew update
+brew install build-essential libssl-dev
 ```
 
 Compilar:
@@ -59,23 +57,12 @@ Moverse a la carpeta **app**:
 ```
 cd ($DOWNLOAD-PATH)/rtree/app
 ```
-
-Instalar Python (2.7.12):
-
-```
-sudo apt-get install python2.7 
-```
-
-Instalar Pip:
-
-```
-sudo apt-get install python-pip
-```
+Instalar el framework de Python necesario para ejecutar la aplicacion web.
 
 Instalar Flask:
 
 ```
-pip install flask
+sudo easy_install flask
 ```
 
 Ejecutar el archivo **app.py** de la carpeta:
