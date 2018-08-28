@@ -221,7 +221,7 @@ function PlotObjects(OBJs_data){
 			num_Points = OBJs_data[iterSearch]*2;
 			if (num_Points == 2){
 				ctx.strokeStyle="#A5D700";
-				ctx.rect(OBJs_data[iterSearch+1],OBJs_data[iterSearch+2],1.3,1.3);
+				ctx.rect(OBJs_data[iterSearch+1]-1.5,OBJs_data[iterSearch+2]-1.5,3.0,3.0);
 				if (Prms.nearest_FLAG == true){
 					ctx.moveTo(OBJs_data[iterSearch+1],OBJs_data[iterSearch+2]);
 					ctx.lineTo(Prms.Nrst_pX,Prms.Nrst_pY);					
@@ -367,8 +367,11 @@ function draw(){
 			var plot = polygons[poli];
 			ctx.beginPath();
 			if (plot.length == 2){
-				ctx.rect(plot[0],plot[1],1.3,1.3);
+				ctx.rect(plot[0],plot[1],1.8,1.8);
 				ctx.stroke();
+				//ctx.arc(plot[0],plot[1], 50, 0, Math.PI * 2, true);
+				//ctx.fill();
+				//ctx.stroke();
 			}
 			else{
 				ctx.moveTo(plot[0], plot[1]);
@@ -383,9 +386,13 @@ function draw(){
 
 	if (points.length > 0){
 		ctx.strokeStyle="#141419";
+		//ctx.fillStyle ="#141419";
+
 		ctx.beginPath();
 		for (var pi = 0; pi < points.length - 1; pi+=2) {
-			ctx.rect(points[pi],points[pi+1],1.3,1.3);
+			//ctx.arc(points[0],points[1], 50, 0, Math.PI * 2, true);
+			//ctx.fill();
+			ctx.rect(points[pi]-1.5,points[pi+1]-1.5,3.0,3.0);
 			ctx.stroke();
 		}
 	}
@@ -641,11 +648,6 @@ function MouseDownFn(event){
 			Prms.Nrst_pY=ydown;
 			fnNeasrest();
 			send_knearest(Prms.Nrst_pX,Prms.Nrst_pY,Prms.k_FLAG);
-			//if(isInt(Prms.k_FLAG)){
-			//	if(Prms.k_FLAG>=0){
-			//		send_knearest(Prms.Nrst_pX,Prms.Nrst_pY,Prms.k_FLAG);
-			//	}
-			//}
 		}
 	}
 	setNewPosition(event);
@@ -673,11 +675,6 @@ function MouseUpFn(event){
 	}
 }
 
-//document.onkeydown = function(e) {
-//	if (e.keyCode === 116){
-//		console.log("F5");
-//	}
-//}
 document.addEventListener("mousedown", MouseDownFn);
 document.addEventListener("mouseup", MouseUpFn);
 document.addEventListener("mousemove", MouseMoveFn);

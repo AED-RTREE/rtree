@@ -76,6 +76,7 @@ protected:
 	ListNode* AllocListNode();
 	void FreeListNode(ListNode* a_listNode);
 	bool Overlap(Rect* a_rectA, Rect* a_rectB) const;
+	bool Overlap2(Rect* a_rectA, Rect* a_rectB) const;
 	void ReInsert(Node* a_node, ListNode** a_listNode);
 	bool Search(Node* a_node, Rect* a_rect, int& a_foundCount, vector<vector<pair<int, int>>>& objs) const;
 	void RemoveAllRec(Node* a_node);

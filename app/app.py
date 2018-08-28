@@ -103,7 +103,7 @@ def resetData():
 	data['get_draw_FLAG'] 	= "false"		
 	data['get_search_FLAG'] = "false"	
 	data['get_nearest_FLAG']= "false" 	
-	data['get_k_FLAG'] 	  	= "0"
+	data['get_k_FLAG'] 	  	= "1"
 
 	data['get_polText_FLAG']= "[()]"
 	data['get_coorText_FLAG']	= "()"

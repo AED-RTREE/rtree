@@ -681,6 +681,19 @@ bool RTree::Overlap(Rect* a_rectA, Rect* a_rectB) const
 	return true;
 }
 
+bool RTree::Overlap2(Rect* a_rectA, Rect* a_rectB) const
+{
+
+	if (a_rectA->m_min[0] <= a_rectB->m_min[0] &&
+		a_rectB->m_max[0] <= a_rectA->m_max[0] &&
+		a_rectA->m_min[1] <= a_rectB->m_min[1] &&
+		a_rectB->m_max[1] <= a_rectA->m_max[1]){
+		return true;
+	} else {
+		return false;
+	} 
+}
+
 void RTree::ReInsert(Node* a_node, ListNode** a_listNode)
 {
 	ListNode* newListNode;
@@ -711,7 +724,7 @@ bool RTree::Search(Node* a_node, Rect* a_rect, int& a_foundCount, vector<vector<
 	{
 		for (int index = 0; index < a_node->m_count; ++index)
 		{
-			if (Overlap(a_rect, &a_node->m_branch[index].m_rect))
+			if (Overlap2(a_rect, &a_node->m_branch[index].m_rect))
 			{
 				vector<pair<int, int>>& id = a_node->m_branch[index].m_data;
 				++a_foundCount;
