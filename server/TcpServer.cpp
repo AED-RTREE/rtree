@@ -101,7 +101,7 @@ void TcpServer::join(const string& command, vector<vector<vector<pair<int, int>>
 
 bool TcpServer::bindSocket()
 {
-	if (bind(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0)
+	if (::bind(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0)
 	{
 		cerr << "bind failed. Error" << endl;
 		return false;

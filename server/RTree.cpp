@@ -793,6 +793,68 @@ bool RTree::getMBRs(vector<vector<vector<pair<int, int>>>>& mbrs_n)
 }
 
 
+int RTree::MinMaxDist(pair<int, int> point, Rect a_rect){
+	int rmk[2], rMi[2];
+	
+	if ( point.first <= (a_rect.m_min[0]+a_rect.m_max[0])/2.0){
+		rmk[0] = a_rect.m_min[0];
+	} else {
+		rmk[0] = a_rect.m_max[0];
+	}
+
+	if (point.second >= (a_rect.m_min[1]+a_rect.m_max[1])/2.0){
+		rMi[1] = a_rect.m_min[1];
+	} else {
+		rMi[1] = a_rect.m_max[1];
+	}
+
+	int alpha[2];
+
+	alpha[0] = (point.first - rmk[0])*(point.first - rmk[0])
+			 + (point.second - rMi[1])*(point.second - rMi[1]);
+
+	if ( point.second <= (a_rect.m_min[1]+a_rect.m_max[1])/2.0){
+		rmk[1] = a_rect.m_min[1];
+	} else {
+		rmk[1] = a_rect.m_max[1];
+	}
+
+	if (point.first >= (a_rect.m_min[0]+a_rect.m_max[0])/2.0){
+		rMi[0] = a_rect.m_min[0];
+	} else {
+		rMi[0] = a_rect.m_max[0];
+	}
+
+	alpha[1] = (point.second - rmk[1])*(point.second - rmk[1])
+			 + (point.first - rMi[0])*(point.first - rMi[0]);
+
+	if (alpha[0] <= alpha[1]){
+		return alpha[0];
+	} else {
+		return alpha[1];
+	}		 
+}
+int RTree::MinDist(pair<int, int> point, Rect a_rect){ 
+	int x, y;
+	if (point.first < a_rect.m_min[0]) { 
+		x = a_rect.m_min[0];
+	}
+	else if (point.first > a_rect.m_max[0]) {
+		x = a_rect.m_max[0];
+	}
+	else { x = point.first; }
+		
+	if (point.second < a_rect.m_min[1]) {
+		y = a_rect.m_min[1];
+	}
+	else if (point.second > a_rect.m_max[1]) {
+		y = a_rect.m_max[1];
+	}
+	else { y = point.second; }
+			
+	return (x - point.first)*(x - point.first) + (y - point.second)*(y - point.second);
+}
+
 bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int, int>>>& objs)
 {
 	Node* cp_root = AllocNode();
@@ -802,7 +864,7 @@ bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int
 	CopyRec(cp_root, m_root);
 
 	Node* nodo;
-	int x, y;
+	//int x, y;
 
 	for (int i = 0; i<k; i++) {
 		nodo = cp_root;
@@ -816,19 +878,29 @@ bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int
 
 			int dist = numeric_limits<int>::max();
 			for (int jj = 0; jj<nodo->m_count; jj++) {
-				if (point.first < nodo->m_branch[jj].m_rect.m_min[0]) { x = nodo->m_branch[jj].m_rect.m_min[0]; }
-				else if (nodo->m_branch[jj].m_rect.m_max[0] < point.first) { x = nodo->m_branch[jj].m_rect.m_max[0]; }
+				int tdist = MinDist(point, nodo->m_branch[jj].m_rect);
+				
+/*				if (point.first < nodo->m_branch[jj].m_rect.m_min[0]) { 
+					x = nodo->m_branch[jj].m_rect.m_min[0];
+				}
+				else if (nodo->m_branch[jj].m_rect.m_max[0] < point.first) {
+					x = nodo->m_branch[jj].m_rect.m_max[0];
+				}
 				else { x = point.first; }
 
-				if (point.second < nodo->m_branch[jj].m_rect.m_min[1]) { y = nodo->m_branch[jj].m_rect.m_min[1]; }
-				else if (nodo->m_branch[jj].m_rect.m_max[1] < point.second) { y = nodo->m_branch[jj].m_rect.m_max[1]; }
+				if (point.second < nodo->m_branch[jj].m_rect.m_min[1]) {
+					y = nodo->m_branch[jj].m_rect.m_min[1];
+				}
+				else if (nodo->m_branch[jj].m_rect.m_max[1] < point.second) {
+					y = nodo->m_branch[jj].m_rect.m_max[1];
+				}
 				else { y = point.second; }
 
 				int tdist = (x - point.first)*(x - point.first) + (y - point.second)*(y - point.second);
-
+*/
 				if (tdist < dist) {
 					dist = tdist;
-					mbranch = nodo->m_branch[jj];
+					mbranch = nodo->m_branch[jj];					
 				}
 			}
 

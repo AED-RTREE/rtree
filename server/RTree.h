@@ -49,6 +49,8 @@ public:
 	bool getMBRs(vector<vector<vector<pair<int, int>>>>& mbrs_n);
 	bool nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int, int>>>& v);
 	Rect MBR(vector<pair<int, int>> pol);
+	int MinDist(pair<int, int> point, Rect a_rect);	
+	int MinMaxDist(pair<int, int> point, Rect a_rect);
 
 protected:
 
@@ -82,7 +84,7 @@ protected:
 	void RemoveAllRec(Node* a_node);
 	void Reset();
 	void CountRec(Node* a_node, int& a_count);
-
+	
 	void CopyRec(Node* current, Node* other);
 
 	Node* m_root;                                    ///< Root of tree
