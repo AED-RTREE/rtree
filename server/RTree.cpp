@@ -29,8 +29,9 @@ RTree::~RTree()
 }
 
 
-void RTree::Insert(const int a_min[2], const int a_max[2], const vector<pair<int, int>>& a_dataId)
+void RTree::Insert(const int a_min[2], const int a_max[2], vector<pair<int, int>>& a_dataId)
 {
+	mObjs.push_back(a_dataId);
 
 	Branch branch;
 	branch.m_data = a_dataId;
@@ -157,6 +158,8 @@ void RTree::CopyRec(Node* current, Node* other)
 
 void RTree::RemoveAll()
 {
+	mObjs.clear();
+
 	Reset();
 
 	m_root = AllocNode();
@@ -857,60 +860,35 @@ int RTree::MinDist(pair<int, int> point, Rect a_rect){
 
 bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int, int>>>& objs)
 {
-	Node* cp_root = AllocNode();
-	pair<int, int> point = points[0];
 	objs.clear();
-
-	CopyRec(cp_root, m_root);
-
-	Node* nodo;
-	//int x, y;
-
-	for (int i = 0; i<k; i++) {
-		nodo = cp_root;
-		Branch mbranch;
-
-		if (cp_root->m_count == 0) {
-			return true;
-		}
-
-		for (int ii = 0; ii <= cp_root->m_level; ii++) {
-
-			int dist = numeric_limits<int>::max();
-			for (int jj = 0; jj<nodo->m_count; jj++) {
-				int tdist = MinDist(point, nodo->m_branch[jj].m_rect);
-				
-/*				if (point.first < nodo->m_branch[jj].m_rect.m_min[0]) { 
-					x = nodo->m_branch[jj].m_rect.m_min[0];
-				}
-				else if (nodo->m_branch[jj].m_rect.m_max[0] < point.first) {
-					x = nodo->m_branch[jj].m_rect.m_max[0];
-				}
-				else { x = point.first; }
-
-				if (point.second < nodo->m_branch[jj].m_rect.m_min[1]) {
-					y = nodo->m_branch[jj].m_rect.m_min[1];
-				}
-				else if (nodo->m_branch[jj].m_rect.m_max[1] < point.second) {
-					y = nodo->m_branch[jj].m_rect.m_max[1];
-				}
-				else { y = point.second; }
-
-				int tdist = (x - point.first)*(x - point.first) + (y - point.second)*(y - point.second);
-*/
-				if (tdist < dist) {
-					dist = tdist;
-					mbranch = nodo->m_branch[jj];					
-				}
-			}
-
-			if (nodo->IsInternalNode()) {
-				nodo = mbranch.m_child;
-			}
-		}
-		objs.push_back(mbranch.m_data);
-		RemoveRect(&mbranch.m_rect, mbranch.m_data, &cp_root);
+	pair<int, int> point = points[0];
+	vector<pair<float, vector<pair<int, int>>>> distObjs;
+	for (auto& obj : mObjs) {
+		distObjs.push_back(make_pair(distPol(point, obj), obj));
 	}
+
+	cout << "------------------------" << endl;
+	cout << "distObjs.size(): " << distObjs.size() << endl;
+	for (auto& obj : distObjs) {
+		cout << obj.first << ": ";
+
+		for (auto& point : obj.second) {
+			cout << point.first << ", " << point.second << " :";
+		}
+
+		cout << endl;
+	}
+	cout << "------------------------" << endl;
+	
+	sort(distObjs.begin(), distObjs.end());
+
+	int count = 0;
+	for (auto& obj: distObjs) {
+		if (count > k-1) break;
+		objs.push_back(obj.second);
+		count++;
+	}
+
 	return true;
 }
 
@@ -941,4 +919,49 @@ Rect RTree::MBR(vector<pair<int, int>> pol)
 	}
 
 	return Rect(x1, y1, x2, y2);
+}
+
+float RTree::distancia(pair<int, int> p, pair<int, int> p1, pair<int, int> p2) {//p1 y p2 están en el polígono
+	float b, bp, m, mp, x, x1, x2, d, d1, d2;
+	m = (p1.second - p2.second) / ((1.0)*(p1.first - p2.first));
+	mp = -1 / m;
+	b = p1.second - m * p1.first;
+	bp = p.second - mp * p.first;
+	x = (b - bp) / (m - mp);
+	if (p1.first <= p2.first) {
+		x1 = p1.first;
+		x2 = p2.first;
+	}
+	else {
+		x2 = p1.first;
+		x1 = p2.first;
+	}
+
+	if (x1 <= x && x <= x2) {
+		d = abs(p.second + m * p.first + b) / sqrt(1 + m*m);
+	}
+	else {
+		d1 = sqrt((p.first - p1.first)*(p.first - p1.first) + (p.second - p1.second)*(p.second - p1.second));
+		d2 = sqrt((p.first - p2.first)*(p.first - p2.first) + (p.second - p2.second)*(p.second - p2.second));
+		d = (d1 < d2) ? d1 : d2;
+	}
+
+	return d;
+}
+
+float RTree::distPol(pair<int, int>p, vector<pair<int, int>> poligono) {
+	float d, temp;
+	int i, n;
+	n = poligono.size();
+	if (n == 1) {
+		return sqrt((p.first - poligono[0].first)* (p.first - poligono[0].first) + (p.second - poligono[0].second)*(p.second - poligono[0].second));
+	}
+	d = distancia(p, poligono[n - 1], poligono[0]);
+	for (i = 0;i < n - 1;i++) {
+		temp = distancia(p, poligono[i], poligono[i + 1]);
+		if (temp < d) {
+			d = temp;
+		}
+	}
+	return d;
 }

@@ -19,6 +19,7 @@
 #include <functional>
 #include <vector>
 #include <limits>
+#include <iostream>
 
 #include "Constants.h"
 #include "Structs.h"
@@ -37,7 +38,7 @@ public:
 	RTree(const RTree& other);
 	virtual ~RTree();
 
-	void Insert(const int a_min[2], const int a_max[2], const vector<pair<int, int>>& a_dataId);
+	void Insert(const int a_min[2], const int a_max[2], vector<pair<int, int>>& a_dataId);
 	void Remove(const int a_min[2], const int a_max[2], const vector<pair<int, int>>& a_dataId);
 	int Search(const pair<int, int> a_min, const pair<int, int> a_max, vector<vector<pair<int, int>>>& objs) const;
 	void RemoveAll();
@@ -51,6 +52,14 @@ public:
 	Rect MBR(vector<pair<int, int>> pol);
 	int MinDist(pair<int, int> point, Rect a_rect);	
 	int MinMaxDist(pair<int, int> point, Rect a_rect);
+	
+	// el punto del knn /un punto del poligono /un punto del poligono
+	float distancia(pair<int, int>, pair<int, int>, pair<int, int>);
+
+	// el punto del knn / el poligono
+	float distPol(pair<int, int>, vector<pair<int, int>>);
+
+	vector<vector<pair<int, int>>> mObjs;
 
 protected:
 
