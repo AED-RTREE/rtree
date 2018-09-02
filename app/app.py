@@ -125,7 +125,7 @@ def hello():
 		s.connect((shost, sport))
 	tag_to_send = "DELETE|0|END"
 	del_ob = RecvData(tag_to_send)
-	if (del_ob [0] == "DELETE"):
+	if (del_ob [0] == "DELETE" and count==0):
 		resetData()
 		print('DATA(Recv) <== RESET')
 	
