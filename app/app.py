@@ -122,6 +122,7 @@ def resetData():
 def hello():
 	global plgons_arr, points_arr, data, MBRs_saved, s, count
 	if (count == 0):
+		print(shost, sport)
 		s.connect((shost, sport))
 	tag_to_send = "DELETE|0|END"
 	del_ob = RecvData(tag_to_send)

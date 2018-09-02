@@ -59,6 +59,8 @@ public:
 	// el punto del knn / el poligono
 	float distPol(pair<int, int>, vector<pair<int, int>>);
 
+	bool estadentro(pair<int,int>, vector<pair<int,int>>);
+
 	vector<vector<pair<int, int>>> mObjs;
 
 protected:

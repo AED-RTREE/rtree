@@ -921,34 +921,74 @@ Rect RTree::MBR(vector<pair<int, int>> pol)
 	return Rect(x1, y1, x2, y2);
 }
 
-float RTree::distancia(pair<int, int> p, pair<int, int> p1, pair<int, int> p2) {//p1 y p2 están en el polígono
-	float b, bp, m, mp, x, x1, x2, d, d1, d2;
-	m = (p1.second - p2.second) / ((1.0)*(p1.first - p2.first));
-	mp = -1 / m;
-	b = p1.second - m * p1.first;
-	bp = p.second - mp * p.first;
-	x = (b - bp) / (m - mp);
-	if (p1.first <= p2.first) {
-		x1 = p1.first;
-		x2 = p2.first;
+float RTree::distancia(pair<int,int> p, pair<int,int> p1, pair<int,int> p2){//p1 y p2 están en el polígono
+	float b, bp, m, mp, x,  d, d1, d2;
+	int x1, x2;
+	
+	if(p1.second==p2.second){
+		if(p1.first<=p2.first){
+			x1=p1.first;
+			x2=p2.first;
+		}else{
+			x2=p1.first;
+			x1=p2.first;
+		}
+		
+		if(x1<=x && x<=x2){
+			d=abs(p.second-p1.second);
+		}else{
+			d1=sqrt( (p.first-p1.first)*(p.first-p1.first)+(p.second-p1.second)*(p.second-p1.second) );
+			d2=sqrt( (p.first-p2.first)*(p.first-p2.first)+(p.second-p2.second)*(p.second-p2.second) );
+			d=(d1<d2)?d1:d2;
+		}
+		return d;
 	}
-	else {
-		x2 = p1.first;
-		x1 = p2.first;
+	
+	if(p1.first==p2.first){
+		if(p1.first<=p2.first){
+			x1=p1.second;
+			x2=p2.second;
+		}else{
+			x2=p1.second;
+			x1=p2.second;
+		}
+		
+		if(x1<=x && x<=x2){
+			d=abs(p.first-p1.first);
+		}else{
+			d1=sqrt( (p.first-p1.first)*(p.first-p1.first)+(p.second-p1.second)*(p.second-p1.second) );
+			d2=sqrt( (p.first-p2.first)*(p.first-p2.first)+(p.second-p2.second)*(p.second-p2.second) );
+			d=(d1<d2)?d1:d2;
+		}
+		return d;
+	}
+	
+	m=(p1.second-p2.second)/((1.0)*(p1.first-p2.first));
+	mp=-1/m;
+	b=p1.second-m*p1.first;
+	bp=p.second-mp*p.first;
+	x=(bp-b)/(m-mp);
+	//cout<<x<<endl;
+
+	if(p1.first<=p2.first){
+		x1=p1.first;
+		x2=p2.first;
+	}else{
+		x2=p1.first;
+		x1=p2.first;
 	}
 
-	if (x1 <= x && x <= x2) {
-		d = abs(p.second + m * p.first + b) / sqrt(1 + m*m);
-	}
-	else {
-		d1 = sqrt((p.first - p1.first)*(p.first - p1.first) + (p.second - p1.second)*(p.second - p1.second));
-		d2 = sqrt((p.first - p2.first)*(p.first - p2.first) + (p.second - p2.second)*(p.second - p2.second));
-		d = (d1 < d2) ? d1 : d2;
-	}
 
+	if(x1<=x && x<=x2){
+		d=abs(p.second+m*p.first+b)/sqrt(1+m*m);
+	}else{
+		d1=sqrt( (p.first-p1.first)*(p.first-p1.first)+(p.second-p1.second)*(p.second-p1.second) );
+		d2=sqrt( (p.first-p2.first)*(p.first-p2.first)+(p.second-p2.second)*(p.second-p2.second) );
+		d=(d1<d2)?d1:d2;
+	}
+	
 	return d;
 }
-
 float RTree::distPol(pair<int, int>p, vector<pair<int, int>> poligono) {
 	float d, temp;
 	int i, n;
@@ -956,6 +996,11 @@ float RTree::distPol(pair<int, int>p, vector<pair<int, int>> poligono) {
 	if (n == 1) {
 		return sqrt((p.first - poligono[0].first)* (p.first - poligono[0].first) + (p.second - poligono[0].second)*(p.second - poligono[0].second));
 	}
+
+	if(estadentro(p,poligono)){
+		return 0;
+	}
+
 	d = distancia(p, poligono[n - 1], poligono[0]);
 	for (i = 0;i < n - 1;i++) {
 		temp = distancia(p, poligono[i], poligono[i + 1]);
@@ -964,4 +1009,65 @@ float RTree::distPol(pair<int, int>p, vector<pair<int, int>> poligono) {
 		}
 	}
 	return d;
+}
+
+bool RTree::estadentro(pair<int,int> p, vector<pair<int,int>> poligono){
+	pair<int,int> u,v;
+	float x, y, moduv,  sina, cosa, angulo;
+	int n=poligono.size();
+	
+	u.first=poligono[n-1].first-p.first;
+	u.second=poligono[n-1].second-p.second;
+	v.first=poligono[0].first-p.first;
+	v.second=poligono[0].second-p.second;
+	
+	moduv = sqrt(u.first*u.first + u.second*u.second)*sqrt(v.first*v.first + v.second*v.second);
+	sina=(u.first*v.second - u.second*v.first)/moduv;
+	cosa=(u.first*v.first + u.second*v.second)/moduv;
+	
+	
+	if(0<=sina){
+		if(0<=cosa){
+			angulo = acos(cosa);
+		}else{
+			angulo = 3.14159/2 - asin(sina);
+		}
+	}else{
+		if(0<=cosa){
+			angulo = -acos(cosa);
+		}else{
+			angulo = asin(sina) - 3.14159/2;
+		}
+	}
+	cout<<angulo<<endl;
+
+	for(int i=1;i<n;i++ ){
+			u=v;
+			v.first=poligono[i].first-p.first;
+			v.second=poligono[i].second-p.second;
+			moduv = sqrt(u.first*u.first + u.second*u.second)*sqrt(v.first*v.first + v.second*v.second);
+			sina = (u.first*v.second - u.second*v.first)/moduv;
+			cosa = (u.first*v.first + u.second*v.second)/moduv;
+	
+			if(0<=sina){
+				if(0<=cosa){
+					angulo += acos(cosa);
+				}else{
+					angulo += 3.14159 - asin(sina);
+				}
+			}else{
+				if(0<=cosa){
+					angulo += -acos(cosa);
+				}else{
+					angulo += asin(sina) - 3.14159;
+				}
+			}
+	}
+
+	if( abs(angulo)<0.3){		
+		return false;		
+	}else{
+		return true;
+	}
+	
 }
