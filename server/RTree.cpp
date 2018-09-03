@@ -864,21 +864,8 @@ bool RTree::nearest(int k, vector<pair<int, int>> points, vector<vector<pair<int
 	pair<int, int> point = points[0];
 	vector<pair<float, vector<pair<int, int>>>> distObjs;
 	for (auto& obj : mObjs) {
-		distObjs.push_back(make_pair(distPol(point, obj), obj));
+		distObjs.push_back(make_pair(distanceFromPoly(point, obj), obj));
 	}
-
-	cout << "------------------------" << endl;
-	cout << "distObjs.size(): " << distObjs.size() << endl;
-	for (auto& obj : distObjs) {
-		cout << obj.first << ": ";
-
-		for (auto& point : obj.second) {
-			cout << point.first << ", " << point.second << " :";
-		}
-
-		cout << endl;
-	}
-	cout << "------------------------" << endl;
 	
 	sort(distObjs.begin(), distObjs.end());
 
@@ -921,153 +908,148 @@ Rect RTree::MBR(vector<pair<int, int>> pol)
 	return Rect(x1, y1, x2, y2);
 }
 
-float RTree::distancia(pair<int,int> p, pair<int,int> p1, pair<int,int> p2){//p1 y p2 están en el polígono
-	float b, bp, m, mp, x,  d, d1, d2;
-	int x1, x2;
-	
-	if(p1.second==p2.second){
-		if(p1.first<=p2.first){
-			x1=p1.first;
-			x2=p2.first;
-		}else{
-			x2=p1.first;
-			x1=p2.first;
-		}
-		
-		if(x1<=x && x<=x2){
-			d=abs(p.second-p1.second);
-		}else{
-			d1=sqrt( (p.first-p1.first)*(p.first-p1.first)+(p.second-p1.second)*(p.second-p1.second) );
-			d2=sqrt( (p.first-p2.first)*(p.first-p2.first)+(p.second-p2.second)*(p.second-p2.second) );
-			d=(d1<d2)?d1:d2;
-		}
-		return d;
-	}
-	
-	if(p1.first==p2.first){
-		if(p1.first<=p2.first){
-			x1=p1.second;
-			x2=p2.second;
-		}else{
-			x2=p1.second;
-			x1=p2.second;
-		}
-		
-		if(x1<=x && x<=x2){
-			d=abs(p.first-p1.first);
-		}else{
-			d1=sqrt( (p.first-p1.first)*(p.first-p1.first)+(p.second-p1.second)*(p.second-p1.second) );
-			d2=sqrt( (p.first-p2.first)*(p.first-p2.first)+(p.second-p2.second)*(p.second-p2.second) );
-			d=(d1<d2)?d1:d2;
-		}
-		return d;
-	}
-	
-	m=(p1.second-p2.second)/((1.0)*(p1.first-p2.first));
-	mp=-1/m;
-	b=p1.second-m*p1.first;
-	bp=p.second-mp*p.first;
-	x=(bp-b)/(m-mp);
-	//cout<<x<<endl;
-
-	if(p1.first<=p2.first){
-		x1=p1.first;
-		x2=p2.first;
-	}else{
-		x2=p1.first;
-		x1=p2.first;
-	}
-
-
-	if(x1<=x && x<=x2){
-		d=abs(p.second+m*p.first+b)/sqrt(1+m*m);
-	}else{
-		d1=sqrt( (p.first-p1.first)*(p.first-p1.first)+(p.second-p1.second)*(p.second-p1.second) );
-		d2=sqrt( (p.first-p2.first)*(p.first-p2.first)+(p.second-p2.second)*(p.second-p2.second) );
-		d=(d1<d2)?d1:d2;
-	}
-	
-	return d;
+// Given three colinear points p, q, r, the function checks if
+// point q lies on line segment 'pr'
+bool RTree::onSegment(pair<int, int> p, pair<int, int> q, pair<int, int> r)
+{
+	if (q.first <= max(p.first, r.first) && q.first >= min(p.first, r.first) &&
+		q.second <= max(p.second, r.second) && q.second >= min(p.second, r.second))
+		return true;
+	return false;
 }
-float RTree::distPol(pair<int, int>p, vector<pair<int, int>> poligono) {
-	float d, temp;
-	int i, n;
-	n = poligono.size();
-	if (n == 1) {
-		return sqrt((p.first - poligono[0].first)* (p.first - poligono[0].first) + (p.second - poligono[0].second)*(p.second - poligono[0].second));
+
+// To find orientation of ordered triplet (p, q, r).
+// The function returns following values
+// 0 --> p, q and r are colinear
+// 1 --> Clockwise
+// 2 --> Counterclockwise
+int RTree::orientation(pair<int, int> p, pair<int, int> q, pair<int, int> r)
+{
+	int val = (q.second - p.second) * (r.first - q.first) -
+		(q.first - p.first) * (r.second - q.second);
+
+	if (val == 0) return 0;  // colinear
+	return (val > 0) ? 1 : 2; // clock or counterclock wise
+}
+
+// The function that returns true if line segment 'p1q1'
+// and 'p2q2' intersect.
+bool RTree::doIntersect(pair<int, int> p1, pair<int, int> q1, pair<int, int> p2, pair<int, int> q2)
+{
+	// Find the four orientations needed for general and
+	// special cases
+	int o1 = orientation(p1, q1, p2);
+	int o2 = orientation(p1, q1, q2);
+	int o3 = orientation(p2, q2, p1);
+	int o4 = orientation(p2, q2, q1);
+
+	// General case
+	if (o1 != o2 && o3 != o4)
+		return true;
+
+	// Special Cases
+	// p1, q1 and p2 are colinear and p2 lies on segment p1q1
+	if (o1 == 0 && onSegment(p1, p2, q1)) return true;
+
+	// p1, q1 and p2 are colinear and q2 lies on segment p1q1
+	if (o2 == 0 && onSegment(p1, q2, q1)) return true;
+
+	// p2, q2 and p1 are colinear and p1 lies on segment p2q2
+	if (o3 == 0 && onSegment(p2, p1, q2)) return true;
+
+	// p2, q2 and q1 are colinear and q1 lies on segment p2q2
+	if (o4 == 0 && onSegment(p2, q1, q2)) return true;
+
+	return false; // Doesn't fall in any of the above cases
+}
+
+// Returns true if the point p lies inside the polygon[] with n vertices
+bool RTree::isInside(vector<pair<int, int>>& polygon, pair<int, int> p)
+{
+	unsigned n = polygon.size();
+	// There must be at least 3 vertices in polygon[]
+	if (n < 3)  return false;
+
+	// Create a point for line segment from p to infinite
+	pair<int, int> extreme = make_pair(std::numeric_limits<int>::infinity(), p.second );
+
+	// Count intersections of the above line with sides of polygon
+	int count = 0, i = 0;
+	do
+	{
+		int next = (i + 1) % n;
+
+		// Check if the line segment from 'p' to 'extreme' intersects
+		// with the line segment from 'polygon[i]' to 'polygon[next]'
+		if (doIntersect(polygon[i], polygon[next], p, extreme))
+		{
+			// If the point 'p' is colinear with line segment 'i-next',
+			// then check if it lies on segment. If it lies, return true,
+			// otherwise false
+			if (orientation(polygon[i], p, polygon[next]) == 0)
+				return onSegment(polygon[i], p, polygon[next]);
+
+			count++;
+		}
+		i = next;
+	} while (i != 0);
+
+	// Return true if count is odd, false otherwise
+	return count & 1;  // Same as (count%2 == 1)
+}
+
+float RTree::distanceFromLine(const pair<int, int>& p, const pair<int, int>& l1, const pair<int, int>& l2) {
+	float xDelta = l2.first - l1.first;
+	float yDelta = l2.second - l1.second;
+
+	//	final double u = ((p3.getX() - p1.getX()) * xDelta + (p3.getY() - p1.getY()) * yDelta) / (xDelta * xDelta + yDelta * yDelta);
+	float u = ((p.first - l1.first) * xDelta + (p.second - l1.second)*yDelta) / (xDelta * xDelta + yDelta * yDelta);
+
+	pair<int, int> closestPointOnLine;
+	if (u < 0) {
+		closestPointOnLine = l1;
+	}
+	else if (u > 1) {
+		closestPointOnLine = l2;
+	}
+	else {
+		closestPointOnLine = make_pair(l1.first + u * xDelta, l1.second + u * yDelta);
 	}
 
-	if(estadentro(p,poligono)){
+
+	pair<int, int> d = make_pair(p.first - closestPointOnLine.first, p.second - closestPointOnLine.second);
+	return sqrt(d.first * d.first + d.second * d.second); // distance
+}
+
+
+float RTree::distanceFromPoly(const pair<int, int>& p, vector<pair<int, int>>& poly) {
+
+	if (isInside(poly, p)) {
 		return 0;
 	}
 
-	d = distancia(p, poligono[n - 1], poligono[0]);
-	for (i = 0;i < n - 1;i++) {
-		temp = distancia(p, poligono[i], poligono[i + 1]);
-		if (temp < d) {
-			d = temp;
-		}
-	}
-	return d;
-}
-
-bool RTree::estadentro(pair<int,int> p, vector<pair<int,int>> poligono){
-	pair<int,int> u,v;
-	float x, y, moduv,  sina, cosa, angulo;
-	int n=poligono.size();
-	
-	u.first=poligono[n-1].first-p.first;
-	u.second=poligono[n-1].second-p.second;
-	v.first=poligono[0].first-p.first;
-	v.second=poligono[0].second-p.second;
-	
-	moduv = sqrt(u.first*u.first + u.second*u.second)*sqrt(v.first*v.first + v.second*v.second);
-	sina=(u.first*v.second - u.second*v.first)/moduv;
-	cosa=(u.first*v.first + u.second*v.second)/moduv;
-	
-	
-	if(0<=sina){
-		if(0<=cosa){
-			angulo = acos(cosa);
-		}else{
-			angulo = 3.14159/2 - asin(sina);
-		}
-	}else{
-		if(0<=cosa){
-			angulo = -acos(cosa);
-		}else{
-			angulo = asin(sina) - 3.14159/2;
-		}
-	}
-	cout<<angulo<<endl;
-
-	for(int i=1;i<n;i++ ){
-			u=v;
-			v.first=poligono[i].first-p.first;
-			v.second=poligono[i].second-p.second;
-			moduv = sqrt(u.first*u.first + u.second*u.second)*sqrt(v.first*v.first + v.second*v.second);
-			sina = (u.first*v.second - u.second*v.first)/moduv;
-			cosa = (u.first*v.first + u.second*v.second)/moduv;
-	
-			if(0<=sina){
-				if(0<=cosa){
-					angulo += acos(cosa);
-				}else{
-					angulo += 3.14159 - asin(sina);
-				}
-			}else{
-				if(0<=cosa){
-					angulo += -acos(cosa);
-				}else{
-					angulo += asin(sina) - 3.14159;
-				}
-			}
+	if (poly.size() == 1) {
+		return sqrt((p.first - poly[0].first)* (p.first - poly[0].first) + (p.second - poly[0].second)*(p.second - poly[0].second));
 	}
 
-	if( abs(angulo)<0.3){		
-		return false;		
-	}else{
-		return true;
+	float result = std::numeric_limits<float>::infinity();
+
+	// check each line
+	for (int i = 0; i < poly.size(); i++) {
+		int previousIndex = i - 1;
+		if (previousIndex < 0) {
+			previousIndex = poly.size() - 1;
+		}
+
+		pair<int, int> currentPoint = poly.at(i);
+		pair<int, int> previousPoint = poly.at(previousIndex);
+
+		float segmentDistance = distanceFromLine(make_pair(p.first, p.second), previousPoint, currentPoint);
+
+		if (segmentDistance < result) {
+			result = segmentDistance;
+		}
 	}
-	
+
+	return result;
 }

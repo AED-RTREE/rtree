@@ -52,16 +52,14 @@ public:
 	Rect MBR(vector<pair<int, int>> pol);
 	int MinDist(pair<int, int> point, Rect a_rect);	
 	int MinMaxDist(pair<int, int> point, Rect a_rect);
-	
-	// el punto del knn /un punto del poligono /un punto del poligono
-	float distancia(pair<int, int>, pair<int, int>, pair<int, int>);
-
-	// el punto del knn / el poligono
-	float distPol(pair<int, int>, vector<pair<int, int>>);
-
-	bool estadentro(pair<int,int>, vector<pair<int,int>>);
 
 	vector<vector<pair<int, int>>> mObjs;
+	bool onSegment(pair<int, int> p, pair<int, int> q, pair<int, int> r);
+	int orientation(pair<int, int> p, pair<int, int> q, pair<int, int> r);
+	bool doIntersect(pair<int, int> p1, pair<int, int> q1, pair<int, int> p2, pair<int, int> q2);
+	bool isInside(vector<pair<int, int>>& polygon, pair<int, int> p);
+	float distanceFromLine(const pair<int, int>& p, const pair<int, int>& l1, const pair<int, int>& l2);
+	float distanceFromPoly(const pair<int, int>& p, vector<pair<int, int>>& poly);
 
 protected:
 
